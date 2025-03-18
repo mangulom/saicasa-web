@@ -1,0 +1,950 @@
+<div class="row">
+
+    <div class="col-12">
+        <div class="card divmargen">
+            <div class="card-header">
+                <h4 class="card-title">
+                    <div>
+                        <i class="fas fa-user-friends"></i>
+                        &nbsp;
+                        Usuarios
+                        &nbsp;
+                        <button type="button" class="btn btn-secondary btn-sm" (click)="onResetFormUsuario()"
+                            data-toggle="modal" data-target="#viewModalUsuario">
+                            <i class="far fa-plus-square"></i>
+                            Crear
+                        </button>
+                    </div>
+                </h4>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+
+
+                <form (ngSubmit)="searchUsuario()">
+
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input type="text" name="searchInput" [(ngModel)]="searchInput" class="form-control" autocomplete="off"
+                                    placeholder="Texto a buscar">
+                                <button type="submit" class="btn btn-info">
+                                    <i class="fa fa-search"></i> Buscar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+
+                <div class="table-responsive">
+
+                    <table mat-table [dataSource]="usuarioData" class="mat-elevation-z8">
+
+                        <ng-container matColumnDef="Opciones">
+                            <th mat-header-cell *matHeaderCellDef> Opciones </th>
+                            <td mat-cell *matCellDef="let usuario">
+                                <button type="button" name="editar" (click)="onUpdateUsuario(usuario)"
+                                    title="Editar Usuario" data-toggle="modal" data-target="#viewModalUsuario"
+                                    class="btn button-edit btn-sm">
+                                    <i class="far fa-edit"></i>
+                                </button>
+                                &nbsp;
+                                <button type="button" name="perfil" title="Accesos" (click)="editAccesoMenu(usuario)"
+                                    data-toggle="modal" data-target="#viewModalAcceso" class="btn button-acceso btn-sm">
+                                    <i class="fas fa-list"></i>
+                                </button>
+                                &nbsp;
+                                <button *ngIf="usuario.estado == 'true'" (click)="onDisableUsuario(usuario)"
+                                    title="Desactivar Usuario" type="button" class="btn btn-danger btn-sm"><i
+                                        class="fas fa-trash"></i></button>
+                                <button *ngIf="usuario.estado == 'false'" (click)="onActiveUsuario(usuario)"
+                                    type="button" class="btn btn-success btn-sm"><i
+                                        class="fas fa-check-circle"></i></button>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="Nombre">
+                            <th mat-header-cell *matHeaderCellDef> Nombre </th>
+                            <td mat-cell *matCellDef="let usuario"> {{usuario.nombre}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="Usuario">
+                            <th mat-header-cell *matHeaderCellDef> Usuario </th>
+                            <td mat-cell *matCellDef="let usuario"> {{usuario.usuario}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="Estado">
+                            <th mat-header-cell *matHeaderCellDef> Estado </th>
+                            <td mat-cell *matCellDef="let usuario">
+                                <span *ngIf="usuario.estado == 'true'" class="badge badge-success">Activo</span>
+                                <span *ngIf="usuario.estado == 'false'" class="badge badge-danger">Inactivo</span>
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="usuarioCol"></tr>
+                        <tr mat-row *matRowDef="let row; columns: usuarioCol;"></tr>
+
+
+                    </table>
+
+                    <mat-paginator [pageSizeOptions]="[6, 10]" showFirstLastButtons></mat-paginator>
+
+                </div>
+
+            </div>
+            <!-- /.card-body -->
+        </div>
+
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->
+
+<!-- Modal -->
+<div class="modal fade" id="viewModalUsuario" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+
+        <div class="modal-content">
+
+            <div class="modal-header pt-1 pb-1">
+
+                <button type="button" #closebutton class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <mat-tab-group [(selectedIndex)]="selectedTabIndex" animationDuration="0ms">
+                    <mat-tab>
+
+                        <ng-template mat-tab-label>
+                            <i class="fas fa-warehouse"></i>
+                            &nbsp;
+                            General
+                        </ng-template>
+                        &nbsp;
+                        <div class="container-fluid">
+                            <form [formGroup]="formUsuario" (ngSubmit)="onSaveUsuario()" class="form-horizontal">
+                                <div class="row">
+                                    <div class="col-md-12">
+
+                                        <div class="form-group row">
+                                            <label for="inputUsuarioNombre"
+                                                class="col-sm-2 col-form-label">Nombre</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" formControlName="nombre"
+                                                    placeholder="Ingrese Nombre" autocomplete="off"
+                                                    [ngClass]="{ 'is-invalid': submitted && f.nombre.errors }">
+                                                <div *ngIf="submitted && f.nombre.errors" class="invalid-feedback">
+                                                    <div *ngIf="f.nombre.errors.required">*Nombre Requerido</div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label for="inputUsuarioUsuario"
+                                                class="col-sm-2 col-form-label">Usuario</label>
+                                            <div class="col-sm-10">
+                                                <input [readonly]="usuarioDisableInput" type="text" class="form-control"
+                                                    formControlName="usuario" placeholder="Ingrese Usuario"
+                                                    autocomplete="off"
+                                                    [ngClass]="{ 'is-invalid': submitted && f.usuario.errors }">
+                                                <div *ngIf="submitted && f.usuario.errors" class="invalid-feedback">
+                                                    <div *ngIf="f.usuario.errors.required">*Usuario Requerido</div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label for="inputUsuarioPerfil"
+                                                class="col-sm-2 col-form-label">Perfil</label>
+                                            <div class="col-sm-10">
+                                                <select formControlName="perfil" class="form-control"
+                                                    [ngClass]="{ 'is-invalid': submitted && f.perfil.errors }">
+                                                    <option value="" disabled>Seleccionar</option>
+                                                    <option *ngFor="let perfil of perfiles" [value]="perfil.id">
+                                                        {{perfil.desperfil}}
+                                                    </option>
+                                                </select>
+                                                <div *ngIf="submitted && f.perfil.errors" class="invalid-feedback">
+                                                    <div *ngIf="f.perfil.errors.required">*Perfil Requerido</div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label for="inputUsuarioPassword"
+                                                class="col-sm-2 col-form-label">Password</label>
+                                            <div class="col-sm-10">
+                                                <input type="password" class="form-control" formControlName="password"
+                                                    placeholder="Ingrese Contraseña" autocomplete="off"
+                                                    [ngClass]="{ 'is-invalid': submitted && f.password.errors }">
+                                                <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                                                    <div *ngIf="f.password.errors.required">*Password Requerido</div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-sm-12 text-right">
+                                                <button type="button" class="btn btn-danger"
+                                                    data-dismiss="modal">Cerrar</button>
+                                                &nbsp;
+                                                <button type="submit" class="btn btn-info" #closeBtn>Registrar</button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </form>
+                        </div>
+                    </mat-tab>
+                    <mat-tab [disabled]='tabEmpresa'>
+                        <ng-template mat-tab-label>
+                            <i class="fas fa-palette"></i>
+                            &nbsp;
+                            Empresa
+                        </ng-template>
+                        &nbsp;
+                        <div class="container-fluid">
+                            <form [formGroup]="formEmpresa" (ngSubmit)="onSaveEmpresa()" class="form-horizontal">
+                                <div class="row">
+                                    <div class="col-md-12">
+
+                                        <div class="form-group row">
+                                            <label for="inputProductoGrupo"
+                                                class="col-sm-2 col-form-label">Empresas</label>
+                                            <div class="col-sm-8">
+                                                <select formControlName="codempresa" class="form-control">
+                                                    <option value="" selected disabled>Seleccionar</option>
+                                                    <option *ngFor="let empresa of empresas"
+                                                        [value]="empresa.codempresa">
+                                                        {{empresa.desrazonsocial}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            &nbsp;
+                                            <div class="col-sm-1">
+                                                <button type="submit" class="btn btn-success">Agregar</button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+
+
+                        <div class="table-responsive">
+
+                            <table mat-table [dataSource]="empresaData" class="mat-elevation-z8">
+
+                                <ng-container matColumnDef="Opciones">
+                                    <th mat-header-cell *matHeaderCellDef> Opciones </th>
+                                    <td mat-cell *matCellDef="let empresa">
+                                        <button type="button" name="eliminar" (click)="deleteEmpresa(empresa)"
+                                            title="Quitar Empresa" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-ban"></i>
+                                        </button>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="Codigo">
+                                    <th mat-header-cell *matHeaderCellDef> Codigo </th>
+                                    <td mat-cell *matCellDef="let empresa"> {{empresa.codempresa}} </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="RazonSocial">
+                                    <th mat-header-cell *matHeaderCellDef> RazonSocial </th>
+                                    <td mat-cell *matCellDef="let empresa"> {{empresa.empresa.desrazonsocial}} </td>
+                                </ng-container>
+
+                                <tr mat-header-row *matHeaderRowDef="empresaCol"></tr>
+                                <tr mat-row *matRowDef="let row; columns: empresaCol;"></tr>
+                            </table>
+
+                            <mat-paginator #paginatorEmpresa [pageSizeOptions]="[6]" showFirstLastButtons>
+                            </mat-paginator>
+
+                        </div>
+
+                    </mat-tab>
+                    <mat-tab [disabled]='tabSucursal'>
+                        <ng-template mat-tab-label>
+                            <i class="fas fa-palette"></i>
+                            &nbsp;
+                            Sucursal
+                        </ng-template>
+                        &nbsp;
+                        <div class="container-fluid">
+                            <form [formGroup]="formSucursal" (ngSubmit)="onSaveSucursal()" class="form-horizontal">
+                                <div class="row">
+                                    <div class="col-md-12">
+
+                                        <div class="form-group row">
+                                            <label for="inputEmpresaSucursal"
+                                                class="col-sm-2 col-form-label">Empresas</label>
+                                            <div class="col-sm-8">
+                                                <select (change)="onChangeEmpresaSucursal($event.target.value)"
+                                                    formControlName="codempresa" class="form-control">
+                                                    <option value="" selected disabled>Seleccionar</option>
+                                                    <option *ngFor="let empresa of usempresas"
+                                                        [value]="empresa.codempresa">
+                                                        {{empresa.desrazonsocial}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label for="inputSucursal" class="col-sm-2 col-form-label">Sucursal</label>
+                                            <div class="col-sm-8">
+                                                <select formControlName="codsucursal" class="form-control">
+                                                    <option value="" selected disabled>Seleccionar</option>
+                                                    <option *ngFor="let sucursal of sucursales"
+                                                        [value]="sucursal.codsucursal">
+                                                        {{sucursal.nomsucursal}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            &nbsp;
+                                            <div class="col-sm-1">
+                                                <button type="submit" class="btn btn-success">Agregar</button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="table-responsive">
+
+                            <table mat-table [dataSource]="sucursalData" class="mat-elevation-z8">
+
+                                <ng-container matColumnDef="Opciones">
+                                    <th mat-header-cell *matHeaderCellDef> Opciones </th>
+                                    <td mat-cell *matCellDef="let sucursalesusuario">
+                                        <button type="button" name="eliminar"
+                                            (click)="deleteSucursal(sucursalesusuario)" title="Quitar Sucursal"
+                                            class="btn btn-danger btn-sm">
+                                            <i class="fas fa-ban"></i>
+                                        </button>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="Codigo">
+                                    <th mat-header-cell *matHeaderCellDef> Codigo </th>
+                                    <td mat-cell *matCellDef="let sucursalesusuario"> {{sucursalesusuario.codsucursal}}
+                                    </td>
+                                </ng-container>
+
+
+                                <ng-container matColumnDef="Empresa">
+                                    <th mat-header-cell *matHeaderCellDef>Empresa</th>
+                                    <td mat-cell *matCellDef="let sucursalesusuario">
+                                        {{sucursalesusuario.empresa.desrazonsocial}} </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="Nombre">
+                                    <th mat-header-cell *matHeaderCellDef> Sucursal </th>
+                                    <td mat-cell *matCellDef="let sucursalesusuario">
+                                        {{sucursalesusuario.sucursal.nomsucursal}} </td>
+                                </ng-container>
+
+                                <tr mat-header-row *matHeaderRowDef="sucursalCol"></tr>
+                                <tr mat-row *matRowDef="let row; columns: sucursalCol;"></tr>
+                            </table>
+
+                            <mat-paginator #paginatorSucursal [pageSizeOptions]="[6]" showFirstLastButtons>
+                            </mat-paginator>
+
+                        </div>
+
+
+                    </mat-tab>
+                    <mat-tab [disabled]='tabCostos'>
+                        <ng-template mat-tab-label>
+                            <i class="fas fa-palette"></i>
+                            &nbsp;
+                            Costos
+                        </ng-template>
+                        &nbsp;
+                        <div class="container-fluid">
+                            <form [formGroup]="formCosto" (ngSubmit)="onUpdateEmpresaCosto()" class="form-horizontal">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
+                                            <label for="inputEmpresaSucursal"
+                                                class="col-sm-2 col-form-label">Empresas</label>
+                                            <div class="col-sm-7">
+                                                <select formControlName="codempresa" class="form-control">
+                                                    <option value="" selected disabled>Seleccionar</option>
+                                                    <option *ngFor="let empresa of usempresas"
+                                                        [value]="empresa.codempresa">
+                                                        {{empresa.desrazonsocial}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            &nbsp;
+                                            <div class="col-sm-2">
+                                                <button type="submit" class="btn btn-primary"><i
+                                                        class="fa fa-search"></i> Buscar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="row">
+                                <div class="border col-sm-6">
+                                    <p><b>Lista Centro de Costos</b></p>
+
+                                    <div class="row">
+                                    
+                                        <div class="col-sm-6">
+                                            
+                                        </div>
+                                        <div class="col-sm-2 text-right mb-2">
+                                            <button *ngIf="empresaTemp" type="button" class="btn btn-info" (click)="callProcedureSyncCentroCostosUsuarioParametros()">Todos
+                                            </button>
+                                        </div>
+                                        <div class="col-sm-2 text-right mb-2 ml-4">
+                                            <div class="row">
+                                                <div class="col-sm-6 ml-2">
+                                                    <p>Sync</p>
+                                                </div>
+                                                <div class="col-sm-2 ml-2">
+                                                    <input type="checkbox" [(ngModel)]="checkCentroCostos"  (change)="checkCentroCostoUsuario()" />
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+                                        
+                                    </div>
+
+                                    <div class="table-responsive">
+                                        <table mat-table [dataSource]="costoData" class="mat-elevation-z8">
+
+                                            <ng-container matColumnDef="Opciones">
+                                                <th mat-header-cell *matHeaderCellDef> Opciones </th>
+                                                <td mat-cell *matCellDef="let costo">
+                                                    <button title="Agregar" type="button"
+                                                        (click)="onSaveCostosUsuario(costo)"
+                                                        class="btn btn-success btn-sm">
+                                                        <i class="fas fa-check"></i>
+                                                    </button>
+                                                </td>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="CodCosto">
+                                                <th mat-header-cell *matHeaderCellDef> CodCosto </th>
+                                                <td mat-cell *matCellDef="let costo">
+                                                    <p style="font-size:80%;">{{costo.codccostos}} </p>
+                                                </td>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="Descripcion">
+                                                <th mat-header-cell *matHeaderCellDef> Descripcion </th>
+                                                <td mat-cell *matCellDef="let costo">
+                                                    <p style="font-size:80%;"> {{costo.desccostos}} </p>
+                                                </td>
+                                            </ng-container>
+
+                                            <tr mat-header-row *matHeaderRowDef="costoCol"></tr>
+                                            <tr mat-row *matRowDef="let row; columns: costoCol;"></tr>
+
+                                        </table>
+
+                                        <mat-paginator #paginatorcosto [pageSizeOptions]="[6]" showFirstLastButtons>
+                                        </mat-paginator>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="border col-sm-6">
+                                    <p><b>Lista Centro de Costos Asignados</b></p>
+                                    <div class="row">
+                                    
+                                        <div class="col-sm-8">
+                                    
+                                        </div>
+                                        <div class="col-sm-4 text-right mb-2">
+                                            <button *ngIf="empresaTemp" type="button" class="btn btn-info"
+                                                (click)="deleteCostoUsuarioParametros()">Borrar Todos
+                                            </button>
+                                        </div>
+                                    
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table mat-table [dataSource]="costoUsuarioData" class="mat-elevation-z8">
+
+                                            <ng-container matColumnDef="Opciones">
+                                                <th mat-header-cell *matHeaderCellDef> Opciones </th>
+                                                <td mat-cell *matCellDef="let costousuario">
+                                                    <button title="Quitar" type="button"
+                                                        (click)="deleteCostoUsuario(costousuario)"
+                                                        class="btn btn-danger btn-sm">
+                                                        <i class="fas fa-ban"></i>
+                                                    </button>
+                                                </td>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="CodCosto">
+                                                <th mat-header-cell *matHeaderCellDef> CodCosto </th>
+                                                <td mat-cell *matCellDef="let costousuario">
+                                                    <p style="font-size:80%;">{{costousuario.codccostos}} </p>
+                                                </td>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="Descripcion">
+                                                <th mat-header-cell *matHeaderCellDef> Descripcion </th>
+                                                <td mat-cell *matCellDef="let costousuario">
+                                                    <p style="font-size:80%;"> {{costousuario.costo.desccostos}} </p>
+                                                </td>
+                                            </ng-container>
+
+                                            <tr mat-header-row *matHeaderRowDef="costoUsuarioCol"></tr>
+                                            <tr mat-row *matRowDef="let row; columns: costoUsuarioCol;"></tr>
+
+                                        </table>
+
+                                        <mat-paginator #paginatorcostousuario [pageSizeOptions]="[6]"
+                                            showFirstLastButtons></mat-paginator>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </mat-tab>
+                    <mat-tab [disabled]='tabPlanilla'>
+                        <ng-template mat-tab-label>
+                            <i class="fas fa-palette"></i>
+                            &nbsp;
+                            Planilla
+                        </ng-template>
+                        &nbsp;
+
+
+                        <div class="container-fluid">
+                            <form [formGroup]="formPlanilla" (ngSubmit)="onUpdateEmpresaPlanilla()"
+                                class="form-horizontal">
+                                <div class="row">
+                                    <div class="col-md-12">
+
+                                        <div class="form-group row">
+                                            <label for="inputEmpresaPlanilla"
+                                                class="col-sm-2 col-form-label">Empresas</label>
+                                            <div class="col-sm-7">
+                                                <select formControlName="codempresa" class="form-control">
+                                                    <option value="" selected disabled>Seleccionar</option>
+                                                    <option *ngFor="let empresa of usempresas"
+                                                        [value]="empresa.codempresa">
+                                                        {{empresa.desrazonsocial}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            &nbsp;
+                                            <div class="col-sm-2">
+                                                <button type="submit" class="btn btn-primary"><i
+                                                        class="fa fa-search"></i> Buscar</button>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </form>
+
+                            <div class="row">
+                                <div class="border col-sm-6">
+                                    <p><b>Lista Tipo Planilla</b></p>
+                                    <div class="row">
+                                    
+                                        <div class="col-sm-6">
+                                    
+                                        </div>
+                                        <div class="col-sm-2 text-right mb-2">
+                                            <button *ngIf="empresaTempPlanilla" type="button" class="btn btn-info"
+                                                (click)="callProcedureSyncTipoPlanillUsuariosParametros()">Todos
+                                            </button>
+                                        </div>
+                                        <div class="col-sm-2 text-right mb-2 ml-4">
+                                            <div class="row">
+                                                <div class="col-sm-6 ml-2">
+                                                    <p>Sync</p>
+                                                </div>
+                                                <div class="col-sm-2 ml-2">
+                                                    <input type="checkbox" [(ngModel)]="checkTipoPlanilla" (change)="checkTipoPlanillaUsuario()" />
+                                                </div>
+                                            </div>
+                                        
+                                        </div>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table mat-table [dataSource]="tipoPlanillaData" class="mat-elevation-z8">
+
+                                            <ng-container matColumnDef="Opciones">
+                                                <th mat-header-cell *matHeaderCellDef> Opciones </th>
+                                                <td mat-cell *matCellDef="let tipoplanilla">
+                                                    <button title="Agregar" type="button"
+                                                        (click)="onSavePlanillaUsuario(tipoplanilla)"
+                                                        class="btn btn-success btn-sm">
+                                                        <i class="fas fa-check"></i>
+                                                    </button>
+                                                </td>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="CodTipo">
+                                                <th mat-header-cell *matHeaderCellDef> CodTipo </th>
+                                                <td mat-cell *matCellDef="let tipoplanilla">
+                                                    <p style="font-size:80%;">{{tipoplanilla.codtipo}} </p>
+                                                </td>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="Descripcion">
+                                                <th mat-header-cell *matHeaderCellDef> Descripcion </th>
+                                                <td mat-cell *matCellDef="let tipoplanilla">
+                                                    <p style="font-size:80%;"> {{tipoplanilla.destipo}} </p>
+                                                </td>
+                                            </ng-container>
+
+                                            <tr mat-header-row *matHeaderRowDef="tipoPlanillaCol"></tr>
+                                            <tr mat-row *matRowDef="let row; columns: tipoPlanillaCol;"></tr>
+
+                                        </table>
+
+                                        <mat-paginator #paginatortipoplanilla [pageSizeOptions]="[6]"
+                                            showFirstLastButtons></mat-paginator>
+                                    </div>
+                                </div>
+
+
+                                <div class="border col-sm-6">
+                                    <p><b>Lista Tipo Planilla Asignados</b></p>
+                                    <div class="row">
+                                    
+                                        <div class="col-sm-8">
+                                    
+                                        </div>
+                                        <div class="col-sm-4 text-right mb-2">
+                                            <button *ngIf="empresaTempPlanilla" type="button" class="btn btn-info"
+                                                (click)="deleteTipoPlanillaUsuarioParametros()">Borrar Todos
+                                            </button>
+                                        </div>
+                                    
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table mat-table [dataSource]="tipoPlanillaUsuarioData"
+                                            class="mat-elevation-z8">
+
+                                            <ng-container matColumnDef="Opciones">
+                                                <th mat-header-cell *matHeaderCellDef> Opciones </th>
+                                                <td mat-cell *matCellDef="let tipoPlanillaUsuario">
+                                                    <button title="Quitar" type="button"
+                                                        (click)="deletePlanillaUsuario(tipoPlanillaUsuario)"
+                                                        class="btn btn-danger tn-sm">
+                                                        <i class="fas fa-ban"></i>
+                                                    </button>
+                                                </td>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="CodTipo">
+                                                <th mat-header-cell *matHeaderCellDef> CodTipo </th>
+                                                <td mat-cell *matCellDef="let tipoPlanillaUsuario">
+                                                    <p style="font-size:80%;">{{tipoPlanillaUsuario.codtipo}} </p>
+                                                </td>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="Descripcion">
+                                                <th mat-header-cell *matHeaderCellDef> Descripcion </th>
+                                                <td mat-cell *matCellDef="let tipoPlanillaUsuario">
+                                                    <p style="font-size:80%;">
+                                                        {{tipoPlanillaUsuario.tipoplanilla.destipo}} </p>
+                                                </td>
+                                            </ng-container>
+
+                                            <tr mat-header-row *matHeaderRowDef="tipoPlanillaUsuarioCol"></tr>
+                                            <tr mat-row *matRowDef="let row; columns: tipoPlanillaUsuarioCol;"></tr>
+
+                                        </table>
+
+                                        <mat-paginator #paginatortipoplanillausuario [pageSizeOptions]="[6]"
+                                            showFirstLastButtons></mat-paginator>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </mat-tab>
+                    <mat-tab [disabled]='tabCostos'>
+                        <ng-template mat-tab-label>
+                            <i class="fas fa-palette"></i>
+                            &nbsp;
+                            Areas
+                        </ng-template>
+                        &nbsp;
+
+                        <div class="container-fluid">
+
+                            <div class="row">
+                                <div class="border col-sm-6">
+                                    <p><b>AREAS DISPONIBLES</b></p>
+
+                                    <div class="row">
+
+                                        <div class="col-sm-8">
+                                            <mat-form-field>
+                                                <mat-label>Buscar</mat-label>
+                                                <input matInput (keyup)="applyFilter($event)" placeholder="Ingrese Area" #input>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-sm-4 text-right">
+                                            <button type="button" class="btn btn-info" (click)="callProcedureSyncAreasUsuario()">Select. Todos
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                        <div class="col-sm-12">
+
+                                            <div class="table-responsive">
+                                            
+                                                <table mat-table [dataSource]="areasData" class="mat-elevation-z8">
+                                            
+                                            
+                                                    <ng-container matColumnDef="Opciones">
+                                                        <th mat-header-cell *matHeaderCellDef> Opciones </th>
+                                                        <td mat-cell *matCellDef="let area">
+                                                            <button title="Agregar" type="button" class="btn btn-success tn-sm"
+                                                            (click)="addAreaUsuario(area)">
+                                                                <i class="fas fa-check"></i>
+                                                            </button>
+                                                        </td>
+                                                    </ng-container>
+                                            
+                                                    <ng-container matColumnDef="Codigo">
+                                                        <th mat-header-cell *matHeaderCellDef> ID </th>
+                                                        <td mat-cell *matCellDef="let area">
+                                                            <p style="font-size:80%;">{{area.codareas}} </p>
+                                                        </td>
+                                                    </ng-container>
+                                            
+                                                    <ng-container matColumnDef="Descripcion">
+                                                        <th mat-header-cell *matHeaderCellDef> Descripcion </th>
+                                                        <td mat-cell *matCellDef="let area">
+                                                            <p style="font-size:80%;">
+                                                                {{area.desareas}} </p>
+                                                        </td>
+                                                    </ng-container>
+                                            
+                                                    <tr mat-header-row *matHeaderRowDef="areasCol"></tr>
+                                                    <tr mat-row *matRowDef="let row; columns: areasCol;"></tr>
+                                            
+                                            
+                                            
+                                                </table>
+                                            
+                                                <mat-paginator #paginatorareas [pageSizeOptions]="[6]" showFirstLastButtons></mat-paginator>
+                                            
+                                            </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="border col-sm-6">
+                                    <p><b>AREAS ASIGNADAS</b></p>
+                                    
+                                        <div class="row">
+                                        
+                                            <div class="col-sm-8">
+                                                <mat-form-field>
+                                                    <mat-label>Buscar</mat-label>
+                                                    <input matInput (keyup)="filterAreaAsignada($event)" placeholder="Ingrese Area" #input>
+                                                </mat-form-field>
+                                            </div>
+
+                                            <div class="col-sm-4 text-right mb-2">
+                                                <button type="button" class="btn btn-info"
+                                                    (click)="deleteAllAreasByUsuario()">Borrar Todos
+                                                </button>
+                                            </div>
+                                        
+                                        </div>
+                                        
+                                        <div class="col-sm-12">
+
+                                        <div class="table-responsive">
+
+                                        <table mat-table [dataSource]="areasusuarioData" class="mat-elevation-z8">
+                                            
+                                            
+                                                    <ng-container matColumnDef="Opciones">
+                                                        <th mat-header-cell *matHeaderCellDef> Opciones </th>
+                                                        <td mat-cell *matCellDef="let areausuario">
+                                                            <button title="Quitar" type="button" class="btn btn-danger tn-sm"
+                                                            (click)="deleteAreasUsuario(areausuario)">
+                                                                <i class="fas fa-ban"></i>
+                                                            </button>
+                                                        </td>
+                                                    </ng-container>
+                                            
+                                                    <ng-container matColumnDef="Codigo">
+                                                        <th mat-header-cell *matHeaderCellDef> ID </th>
+                                                        <td mat-cell *matCellDef="let areausuario">
+                                                            <p style="font-size:80%;">{{areausuario.codareas}} </p>
+                                                        </td>
+                                                    </ng-container>
+                                            
+                                                    <ng-container matColumnDef="Descripcion">
+                                                        <th mat-header-cell *matHeaderCellDef> Descripcion </th>
+                                                        <td mat-cell *matCellDef="let areausuario">
+                                                            <p style="font-size:80%;">
+                                                                {{areausuario.area.desareas}} </p>
+                                                        </td>
+                                                    </ng-container>
+                                            
+                                                    <tr mat-header-row *matHeaderRowDef="areasusuarioCol"></tr>
+                                                    <tr mat-row *matRowDef="let row; columns: areasusuarioCol;"></tr>
+                                            
+                                            
+                                            
+                                                </table>
+                                            
+                                                <mat-paginator #paginatorareasusuario [pageSizeOptions]="[6]" showFirstLastButtons></mat-paginator>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                        </div>
+
+
+                    </mat-tab>
+                </mat-tab-group>
+
+            </div>
+            <div class="modal-footer">
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- /.Modal Usuario -->
+
+
+<!-- .Modal Acceso -->
+
+
+<!-- Modal -->
+<div class="modal fade" id="viewModalAcceso" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <!--<form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="form-horizontal">-->
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Accesos</h5>
+                <button type="button" #closebutton class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="border col-sm-5">
+                            <p><b>Lista de Acceso</b></p>
+                            <div class="table-responsive">
+                                <table mat-table [dataSource]="PermAccesoData" class="mat-elevation-z8">
+
+                                    <ng-container matColumnDef="Opciones">
+                                        <th mat-header-cell *matHeaderCellDef> Opciones </th>
+                                        <td mat-cell *matCellDef="let submenu">
+                                            <button title="Desactivar Menu" type="button"
+                                                (click)="addAccesoRes(submenu)" class="btn btn-danger btn-sm">
+                                                <i class="fas fa-ban"></i>
+                                            </button>
+                                        </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="Nombre">
+                                        <th mat-header-cell *matHeaderCellDef> Nombre </th>
+                                        <td mat-cell *matCellDef="let submenu"> <p class="tabla">{{submenu.grupo.desgrupomenu + ' - ' + submenu.desfuncion}} </p></td>
+                                    </ng-container>
+
+                                    <tr mat-header-row *matHeaderRowDef="PermAccesoCol"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: PermAccesoCol;"></tr>
+
+                                </table>
+
+                                <mat-paginator #paginatorPermAcceso [pageSizeOptions]="[6]" showFirstLastButtons>
+                                </mat-paginator>
+                            </div>
+                        </div>
+                        <div class="col-sm-2" style="display: flex;
+                                align-items: center;">
+                            <div style="width: 100%; text-align: center;">
+                                <div>
+                                    <i class="fas fa-arrow-right fa-2x"></i>
+                                </div>
+                                <div>
+                                    <i class="fas fa-arrow-left fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="border col-sm-5">
+                            <p><b>Lista de Restricciones</b></p>
+                            <div class="table-responsive">
+
+                                <table mat-table [dataSource]="DenegAccesoData" class="mat-elevation-z8">
+
+                                    <ng-container matColumnDef="Opciones">
+                                        <th mat-header-cell *matHeaderCellDef> Opciones </th>
+                                        <td mat-cell *matCellDef="let submenures">
+                                            <button title="Desactivar Menu" type="button"
+                                                (click)="deleteMenuRes(submenures)" class="btn btn-success btn-sm">
+                                                <i class="fas fa-check-circle"></i>
+                                            </button>
+                                        </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="Nombre">
+                                        <th mat-header-cell *matHeaderCellDef> Nombre </th>
+                                        <td mat-cell *matCellDef="let submenures"> <p class="tabla">{{submenures.maefuncion.grupo.desgrupomenu + ' - ' + submenures.maefuncion.desfuncion}}</p>
+                                        </td>
+                                    </ng-container>
+
+                                    <tr mat-header-row *matHeaderRowDef="DenegAccesoCol"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: DenegAccesoCol;"></tr>
+
+                                </table>
+
+                                <mat-paginator #paginatorDenegAcceso [pageSizeOptions]="[6]" showFirstLastButtons>
+                                </mat-paginator>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+            </div>
+            <!--</form>-->
+        </div>
+    </div>
+</div>
+
+
+<!-- /.Modal Acceso -->

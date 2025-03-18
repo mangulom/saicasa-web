@@ -1,0 +1,135 @@
+<div class="row">
+
+    <div class="col-12">
+        <div class="card divmargen">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="far fa-list-alt"></i>
+                    &nbsp;
+                    Grupo Area
+                </h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+
+                <div class="col-sm-12">
+                    <form (ngSubmit)="onSearchArea()">
+                
+                        <div class="form-group row">
+                            <div class="col-md-9">
+                                <div class="input-group">
+                                    <select class="form-control form-control-sm col-md-3" name="selectedBusqueda"
+                                        [(ngModel)]="selectedBusqueda">
+                                        <option value="Nombre">Nombre</option>
+                                    </select>
+                                    <input type="text" name="searchInput" [(ngModel)]="searchInput"
+                                        class="form-control form-control-sm" placeholder="Area" autocomplete="off">
+                                    <button type="submit" class="btn btn-sm btn-info">
+                                        <i class="fa fa-search"></i> Buscar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                
+                    </form>
+                </div>
+
+              
+
+                <div class="table-responsive">
+
+                    <table mat-table [dataSource]="areasData" class="mat-elevation-z8">
+
+                        <ng-container matColumnDef="Opciones">
+                            <th mat-header-cell *matHeaderCellDef> Opciones </th>
+                            <td mat-cell *matCellDef="let area">
+                                <button type="button" name="editar" (click)="onUpdateArea(area)"
+                                    title="Editar area" data-toggle="modal" data-target="#viewModalarea"
+                                    class="btn button-edit btn-sm">
+                                    <i class="far fa-edit"></i>
+                                </button>
+                               
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="Descripcion">
+                            <th mat-header-cell *matHeaderCellDef> Descripcion </th>
+                            <td mat-cell *matCellDef="let area"> {{area.desareas}} </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="areasCol"></tr>
+                        <tr mat-row *matRowDef="let row; columns: areasCol;"></tr>
+
+
+                    </table>
+
+                    <mat-paginator #paginatorareas [pageSizeOptions]="[6, 10]" showFirstLastButtons></mat-paginator>
+
+                </div>
+
+
+            </div>
+            <!-- /.card-body -->
+        </div>
+
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="viewModalarea" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form [formGroup]="formArea" (ngSubmit)="onSubmit()" class="form-horizontal">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Area</h5>
+                    <button type="button" #closeArea class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                
+
+                                <div class="form-group row mb-2">
+
+                                    <div class="col-sm-8">
+                                        <label for="inputCodPersonaluno"> Area</label>
+                                        <input type="text" class="form-control form-control-sm" formControlName="desareas" name="personaluno"
+                                           readonly>
+                                    </div>
+                                
+                                    <div class="col-sm-4">
+                                        <label for="inputCodPersonal">Grupo </label>
+                                        <select formControlName="gpoareas" class="form-control form-control-sm">
+                                            <option value="" disabled>Seleccionar</option>
+                                            <option *ngFor="let grupo of grupoareas" [value]="grupo.id">
+                                                {{grupo.deslarga}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                
+
+                            </div>
+                        </div>
+                     
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-info" #closeBtn>Registrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

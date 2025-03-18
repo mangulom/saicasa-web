@@ -1,0 +1,936 @@
+<div class="row">
+
+    <div class="col-12">
+        <div class="card divmargen">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="far fa-list-alt"></i>
+                    &nbsp;
+                    Registro EMO
+                    &nbsp;
+                    <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" (click)="onResetFormEmo()"
+                        data-target="#viewModalRegistro">
+                        <i class="far fa-plus-square"></i>
+                        Crear
+                    </button>
+                    &nbsp;
+                    <button class="btn btn-info btn-sm" type="button" data-toggle="modal" data-target="#viewModalCarga"><i
+                            class="fas fa-file-upload"></i>&nbsp;Subir</button>
+                </h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+
+
+                <div class="table-responsive">
+
+                    <table mat-table [dataSource]="emoData" class="mat-elevation-z8">
+                    
+                        <ng-container matColumnDef="Opciones">
+                            <th mat-header-cell *matHeaderCellDef> Opciones </th>
+                            <td mat-cell *matCellDef="let emo">
+                                <button type="button" name="editar" title="Editar Registro Emo" (click)="onUpdateEmo(emo)"
+                                    data-toggle="modal" data-target="#viewModalRegistro" class="btn button-edit btn-sm">
+                                    <i class="far fa-edit"></i>
+                                </button>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="Empresa">
+                            <th mat-header-cell *matHeaderCellDef> Empresa </th>
+                            <td mat-cell *matCellDef="let emo"> <p class="tabla">{{emo.empresa.desrazonsocial }}</p> </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="Sede">
+                            <th mat-header-cell *matHeaderCellDef> Sede </th>
+                            <td mat-cell *matCellDef="let emo"> <p class="tabla"> {{emo.sucursal.nomsucursal }} </p></td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="Fecha">
+                            <th mat-header-cell *matHeaderCellDef> Fecha </th>
+                            <td mat-cell *matCellDef="let emo"><p class="tabla"> {{emo.fecha }} </p></td>
+                        </ng-container>
+                    
+                        <ng-container matColumnDef="Documento">
+                            <th mat-header-cell *matHeaderCellDef> Documento </th>
+                            <td mat-cell *matCellDef="let emo"><p class="tabla"> {{emo.personal.numdocidentidad}} </p></td>
+                        </ng-container>
+                    
+                        <ng-container matColumnDef="ApePat">
+                            <th mat-header-cell *matHeaderCellDef> Ape Paterno </th>
+                            <td mat-cell *matCellDef="let emo"><p class="tabla"> {{emo.personal.apepaterno }} </p></td>
+                        </ng-container>
+                    
+                        <ng-container matColumnDef="ApeMat">
+                            <th mat-header-cell *matHeaderCellDef> Ape Materno </th>
+                            <td mat-cell *matCellDef="let emo"><p class="tabla"> {{emo.personal.apematerno }} </p></td>
+                        </ng-container>
+                    
+                        <ng-container matColumnDef="Nombres">
+                            <th mat-header-cell *matHeaderCellDef> Nombres </th>
+                            <td mat-cell *matCellDef="let emo"><p class="tabla"> {{emo.personal.nomtrabajador }} </p></td>
+                        </ng-container>
+                    
+                        <ng-container matColumnDef="TipoEva">
+                            <th mat-header-cell *matHeaderCellDef> Tipo Evaluacion </th>
+                            <td mat-cell *matCellDef="let emo"><p class="tabla"> {{emo.programa.tblevaluacion.deslarga }} </p></td>
+                        </ng-container>
+                    
+                        <ng-container matColumnDef="Proveedor">
+                            <th mat-header-cell *matHeaderCellDef> Proveedor </th>
+                            <td mat-cell *matCellDef="let emo"><p class="tabla"> {{emo.programa.tblproveedor.deslarga }} </p></td>
+                        </ng-container>
+                    
+
+                    
+                    
+                        <tr mat-header-row *matHeaderRowDef="emoCol"></tr>
+                        <tr mat-row *matRowDef="let row; columns: emoCol;"></tr>
+                    
+                    
+                    </table>
+                    
+                    <mat-paginator #paginatorEmoRea [pageSizeOptions]="[7]" showFirstLastButtons></mat-paginator>
+
+
+
+                </div>
+
+
+            </div>
+            <!-- /.card-body -->
+        </div>
+
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="viewModalRegistro" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Registrar EMO</h5>
+                <button type="button" #closePrincipal class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="background-color: rgba(255, 255, 255, 0.904)">
+                <div class="container-fluid">
+                    <div>
+
+                        <div class="col-md-8">
+                            <div class="input-group mb-2">
+                                <label for="inputBuscarProg" class="col-sm-3 col-form-label">Buscar
+                                    Programacion</label>
+                                &nbsp;
+                                <div class="input-group-append">
+
+                                    <button class="btn btn-info btn-sm" type="button" data-toggle="modal"
+                                        data-target="#viewModalBuscarProgramacion"><i class="fa fa-search"></i>
+                                        Buscar</button>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-md-12">
+                        
+                                <form [formGroup]="formEmo" (ngSubmit)="onSubmit()" class="form-horizontal">
+                        
+                                    <div class="form-group row mb-2">
+                        
+                                        <div class="col-sm-4">
+                                            <label for="inputCodPersonal">Empresa </label>
+                                            <select (change)="onChangeEmpresaSucursal($event.target.value)" formControlName="codempresa"
+                                                class="form-control form-control-sm" disabled>
+                                                <option value="" disabled>Seleccionar</option>
+                                                <option *ngFor="let empresa of empresas" [value]="empresa.codempresa">
+                                                    {{empresa.desrazonsocial}}
+                                                </option>
+                                            </select>
+                                        </div>
+                        
+                                        <div class="col-sm-4">
+                                            <label for="inputCodPersonal">Sede </label>
+                                            <select formControlName="sede" class="form-control form-control-sm" disabled>
+                                                <option value="" disabled>Seleccionar</option>
+                                                <option *ngFor="let sucursal of sucursales" [value]="sucursal.codsucursal">
+                                                    {{sucursal.nomsucursal}}
+                                                </option>
+                                            </select>
+                                        </div>
+                        
+                                        <div class="col-sm-4">
+                                            <label for="inputCodPersonal">Fecha </label>
+                                            <input type="date" class="form-control form-control-sm" formControlName="fecha"
+                                                autocomplete="off">
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group row mb-2">
+                                    
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonaluno"> DNI</label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="numdocidentidad" name="personaluno"
+                                                readonly autocomplete="off">
+                                        </div>
+                                    
+                                        <div class="col-sm-3">
+                                            <label for="inputCodPersonaluno"> Ape. Paterno</label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="apepaterno" name="personaluno" readonly
+                                                autocomplete="off">
+                                        </div>
+                                    
+                                        <div class="col-sm-3">
+                                            <label for="inputCodPersonaluno"> Ape. Materno</label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="apematerno" name="personaluno" readonly
+                                                autocomplete="off">
+                                        </div>
+                                    
+                                        <div class="col-sm-4">
+                                            <label for="inputCodPersonaluno"> Nombre</label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="nomtrabajador" name="personaluno"
+                                                readonly autocomplete="off">
+                                        </div>
+                                    
+                                    </div>
+
+                                    <div class="form-group row mb-2">
+                                    
+                                        <div class="col-sm-4">
+                                            <label for="inputCodPersonaluno"> Area</label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="nomarea" name="personaluno"
+                                                autocomplete="off" [ngClass]="{ 'is-invalid': submittedEmo && g.nomarea.errors }" readonly>
+                                        </div>
+
+                                        <div class="col-sm-4">
+                                            <label for="inputCodPersonal"> Tipo Evaluacion </label>
+                                            <select formControlName="codtipoeva" class="form-control form-control-sm"
+                                                [ngClass]="{ 'is-invalid': submittedEmo && g.codtipoeva.errors }" readonly>
+                                                <option value="" disabled>Seleccionar</option>
+                                                <option *ngFor="let evaluacion of evaluaciones" [value]="evaluacion.id">
+                                                    {{evaluacion.deslarga}}
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-sm-4">
+                                            <label for="inputCodPersonal"> Proveedor </label>
+                                            <select formControlName="codproveedor" class="form-control form-control-sm"
+                                                [ngClass]="{ 'is-invalid': submittedEmo && g.codproveedor.errors }" readonly>
+                                                <option value="" disabled>Seleccionar</option>
+                                                <option *ngFor="let proveedor of proveedores" [value]="proveedor.id">
+                                                    {{proveedor.deslarga}}
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group row mb-2">
+
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonal">Fecha Programacion</label>
+                                            <input type="date" class="form-control form-control-sm" formControlName="fechaprogram" autocomplete="off" readonly>
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonal">Fecha Vencimiento</label>
+                                            <input type="date" class="form-control form-control-sm" formControlName="fechavencimiento" autocomplete="off" readonly>
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonal">Fecha Vigencia</label>
+                                            <input type="date" class="form-control form-control-sm" formControlName="fechavigencia" autocomplete="off"
+                                            [ngClass]="{ 'is-invalid': submittedEmo && g.fechavigencia.errors }">
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group row mb-2">
+
+                                        <div class="col-sm-12">
+                                            <label for="inputCodPersonal"> Antecedentes Personales </label>
+                                            <textarea rows="2" class="form-control form-control-sm" formControlName="antpersonales"
+                                            [ngClass]="{ 'is-invalid': submittedEmo && g.antpersonales.errors }"></textarea>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group row mb-2">
+                                    
+                                        <div class="col-sm-12">
+                                            <label for="inputCodPersonal"> Antecedentes Familiares </label>
+                                            <textarea rows="2" class="form-control form-control-sm" formControlName="antfamiliares"
+                                            [ngClass]="{ 'is-invalid': submittedEmo && g.antfamiliares.errors }"></textarea>
+                                        </div>
+                                    
+                                    </div>
+
+                                    <div class="form-group row mb-2">
+
+                                        <div class="col-sm-3">
+                                            <label for="inputCodPersonaluno"> Alergias Ram</label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="alergiasram" name="personaluno" 
+                                                autocomplete="off"
+                                                [ngClass]="{ 'is-invalid': submittedEmo && g.alergiasram.errors }">
+                                        </div>
+
+                                        <div class="col-sm-3">
+                                            <label for="inputCodPersonal"> Grupo y Factor </label>
+                                            <select formControlName="codgrpfact" class="form-control form-control-sm"
+                                                [ngClass]="{ 'is-invalid': submittedEmo && g.codgrpfact.errors }">
+                                                <option value="" disabled>Seleccionar</option>
+                                                <option *ngFor="let grupo of grupofactores" [value]="grupo.id">
+                                                    {{grupo.deslarga}}
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-sm-3">
+                                            <label for="inputCodPersonaluno"> Presion Sistolica</label>
+                                            <input type="number" class="form-control form-control-sm" formControlName="codpressis" name="personaluno"
+                                                autocomplete="off"
+                                                [ngClass]="{ 'is-invalid': submittedEmo && g.codpressis.errors }">
+                                        </div>
+
+                                        <div class="col-sm-3">
+                                            <label for="inputCodPersonaluno"> Presion Diastolica</label>
+                                            <input type="number" class="form-control form-control-sm" formControlName="codpresdia" name="personaluno"
+                                                autocomplete="off"
+                                                [ngClass]="{ 'is-invalid': submittedEmo && g.codpresdia.errors }">
+                                        </div>
+
+
+                                    </div>
+
+                                    <div class="form-group row mb-2">
+                                    
+                                        <div class="col-sm-3">
+                                            <label for="inputCodPersonaluno"> Peso (kg)</label>
+                                            <input type="number" class="form-control form-control-sm" (change)="onChangeFormularIMC()" formControlName="peso" name="personaluno"
+                                                autocomplete="off"
+                                                [ngClass]="{ 'is-invalid': submittedEmo && g.peso.errors }">
+                                        </div>
+
+                                        <div class="col-sm-3">
+                                            <label for="inputCodPersonaluno"> Talla (m)</label>
+                                            <input type="number" class="form-control form-control-sm" (change)="onChangeFormularIMC()" formControlName="talla" name="personaluno"
+                                                autocomplete="off"
+                                                [ngClass]="{ 'is-invalid': submittedEmo && g.talla.errors }">
+                                        </div>
+
+                                        <div class="col-sm-3">
+                                            <label for="inputCodPersonaluno"> Ind. Masa Corporal</label>
+                                            <input type="number" class="form-control form-control-sm" formControlName="imc" name="personaluno"
+                                                autocomplete="off"
+                                                [ngClass]="{ 'is-invalid': submittedEmo && g.imc.errors }">
+                                        </div>
+
+                                        <div class="col-sm-3">
+                                            <label for="inputCodPersonal"> Estado Nutricional </label>
+                                            <select formControlName="codestnutri" class="form-control form-control-sm"
+                                                [ngClass]="{ 'is-invalid': submittedEmo && g.codestnutri.errors }">
+                                                <option value="" disabled>Seleccionar</option>
+                                                <option *ngFor="let enut of estnut" [value]="enut.id">
+                                                    {{enut.deslarga}}
+                                                </option>
+                                            </select>
+                                        </div>
+
+
+
+                                    </div>
+
+                                    <div class="form-group row mb-2">
+
+                                        <div class="col-sm-6">
+                                            <label for="inputCodPersonaluno"> Dx MusculoEsqueletico </label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="dxmuscesq" name="personaluno"
+                                                autocomplete="off"
+                                                [ngClass]="{ 'is-invalid': submittedEmo && g.dxmuscesq.errors }">
+                                        </div>
+
+                                        <div class="col-sm-4">
+                                            <label for="inputCodPersonaluno"> Dx RadioGrafia de Torax </label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="dxraditor" name="personaluno"
+                                                autocomplete="off"
+                                                [ngClass]="{ 'is-invalid': submittedEmo && g.dxraditor.errors }">
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonaluno"> Ind. De Neumoconosis </label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="indineum" name="personaluno"
+                                                autocomplete="off"
+                                                [ngClass]="{ 'is-invalid': submittedEmo && g.indineum.errors }">
+                                        </div>
+                                  
+    
+                                    </div>
+
+                                    <div class="form-group row mb-2">
+
+                                        <div class="col-sm-4">
+                                            <label for="inputCodPersonaluno"> Aud. Oido Derecho </label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="audioider" name="personaluno"
+                                                autocomplete="off"
+                                                [ngClass]="{ 'is-invalid': submittedEmo && g.audioider.errors }">
+                                        </div>
+
+                                        <div class="col-sm-4">
+                                            <label for="inputCodPersonaluno"> Aud. Oido Izquierdo </label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="audioiizq" name="personaluno"
+                                                autocomplete="off"
+                                                [ngClass]="{ 'is-invalid': submittedEmo && g.audioiizq.errors }">
+                                        </div>
+
+                                        <div class="col-sm-4">
+                                            <label for="inputCodPersonaluno"> Dx Espirometria</label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="dxexpiro" name="personaluno"
+                                                autocomplete="off"
+                                                [ngClass]="{ 'is-invalid': submittedEmo && g.dxexpiro.errors }">
+                                        </div>
+
+
+                                    </div>
+
+                                    <div class="form-group row mb-2">
+
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonaluno"> Hemoglobina </label>
+                                            <input type="number" class="form-control form-control-sm" formControlName="hemoglo" name="personaluno"
+                                                autocomplete="off"
+                                                [ngClass]="{ 'is-invalid': submittedEmo && g.hemoglo.errors }">
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonaluno"> Hemogramma </label>
+                                            <input type="number" class="form-control form-control-sm" formControlName="hemogra" name="personaluno"
+                                                autocomplete="off"
+                                                [ngClass]="{ 'is-invalid': submittedEmo && g.hemogra.errors }">
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonaluno"> Glucosa </label>
+                                            <input type="number" class="form-control form-control-sm" formControlName="glucosa" name="personaluno"
+                                                autocomplete="off"
+                                                [ngClass]="{ 'is-invalid': submittedEmo && g.glucosa.errors }">
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonaluno"> TGO </label>
+                                            <input type="number" class="form-control form-control-sm" formControlName="tgo" name="personaluno"
+                                                autocomplete="off"
+                                                [ngClass]="{ 'is-invalid': submittedEmo && g.tgo.errors }">
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonaluno"> TGP </label>
+                                            <input type="number" class="form-control form-control-sm" formControlName="tgp" name="personaluno" autocomplete="off"
+                                            [ngClass]="{ 'is-invalid': submittedEmo && g.tgp.errors }">
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonaluno"> Colesterol </label>
+                                            <input type="number" class="form-control form-control-sm" formControlName="colesterol" name="personaluno" autocomplete="off"
+                                            [ngClass]="{ 'is-invalid': submittedEmo && g.colesterol.errors }">
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group row mb-2">
+
+                                        <div class="col-sm-1">
+                                            <label for="inputCodPersonaluno"> HDL </label>
+                                            <input type="number" class="form-control form-control-sm" formControlName="hdl" name="personaluno" autocomplete="off"
+                                            [ngClass]="{ 'is-invalid': submittedEmo && g.hdl.errors }">
+                                        </div>
+
+                                        <div class="col-sm-1">
+                                            <label for="inputCodPersonaluno"> LDL </label>
+                                            <input type="number" class="form-control form-control-sm" formControlName="ldl" name="personaluno" autocomplete="off"
+                                            [ngClass]="{ 'is-invalid': submittedEmo && g.ldl.errors }">
+                                        </div>
+
+                                        <div class="col-sm-1">
+                                            <label for="inputCodPersonaluno"> VLDL </label>
+                                            <input type="number" class="form-control form-control-sm" formControlName="vldl" name="personaluno" autocomplete="off"
+                                            [ngClass]="{ 'is-invalid': submittedEmo && g.vldl.errors }">
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonaluno"> Trigliceridos </label>
+                                            <input type="number" class="form-control form-control-sm" formControlName="triglice" name="personaluno"
+                                                autocomplete="off"
+                                                [ngClass]="{ 'is-invalid': submittedEmo && g.triglice.errors }">
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonaluno"> Riesgo Coronario </label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="riescoron" name="personaluno"
+                                                autocomplete="off"
+                                                [ngClass]="{ 'is-invalid': submittedEmo && g.riescoron.errors }">
+                                        </div>
+
+                                        <div class="col-sm-5">
+                                            <label for="inputCodPersonaluno"> Examen Completo Orina</label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="examcomorina" name="personaluno"
+                                                autocomplete="off"
+                                                [ngClass]="{ 'is-invalid': submittedEmo && g.examcomorina.errors }">
+                                        </div>
+
+
+                                    </div>
+
+                                    <div class="form-group row mb-2">
+
+                                        <div class="col-sm-6">
+                                            <label for="inputCodPersonaluno"> Dx Oftalmologia </label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="dxoftalgene" name="personaluno"
+                                                autocomplete="off"
+                                                [ngClass]="{ 'is-invalid': submittedEmo && g.dxoftalgene.errors }">
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <label for="inputCodPersonaluno"> Refraccion </label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="refraccion" name="personaluno"
+                                                autocomplete="off"
+                                                [ngClass]="{ 'is-invalid': submittedEmo && g.refraccion.errors }">
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group row mb-2">
+                                    
+                                        <div class="col-sm-12">
+                                            <label for="inputCodPersonal"> Agudeza Visual Cerca </label>
+                                            <textarea rows="2" class="form-control form-control-sm" formControlName="agudviscerca"
+                                            [ngClass]="{ 'is-invalid': submittedEmo && g.agudviscerca.errors }"></textarea>
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="form-group row mb-2">
+                                    
+                                        <div class="col-sm-12">
+                                            <label for="inputCodPersonal"> Agudeza Visual Lejos </label>
+                                            <textarea rows="2" class="form-control form-control-sm" formControlName="agudvislejos"
+                                            [ngClass]="{ 'is-invalid': submittedEmo && g.agudvislejos.errors }"></textarea>
+                                        </div>
+                                    
+                                    </div>
+
+                                    <div class="form-group row mb-2">
+
+                                        <div class="col-sm-3">
+                                            <label for="inputCodPersonaluno"> Estereopsis </label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="estereop" name="personaluno" autocomplete="off"
+                                            [ngClass]="{ 'is-invalid': submittedEmo && g.estereop.errors }">
+                                        </div>
+
+                                        <div class="col-sm-3">
+                                            <label for="inputCodPersonaluno"> Test de ISHIHARA </label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="testish" name="personaluno" autocomplete="off"
+                                            [ngClass]="{ 'is-invalid': submittedEmo && g.testish.errors }">
+                                        </div>
+
+                                        <div class="col-sm-3">
+                                            <label for="inputCodPersonaluno"> Dx Electrocadiograma </label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="dxelectrocar" name="personaluno"
+                                                autocomplete="off"
+                                                [ngClass]="{ 'is-invalid': submittedEmo && g.dxelectrocar.errors }">
+                                        </div>
+
+                                        <div class="col-sm-3">
+                                            <label for="inputCodPersonaluno"> Dx Psicologia </label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="dxpsicologia" name="personaluno"
+                                                autocomplete="off"
+                                                [ngClass]="{ 'is-invalid': submittedEmo && g.dxpsicologia.errors }">
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group row mb-2">
+                                    
+                                        <div class="col-sm-12">
+                                            <label for="inputCodPersonal"> Dx Exam. Medico General </label>
+                                            <textarea rows="2" class="form-control form-control-sm" formControlName="dxexammedgen"
+                                            [ngClass]="{ 'is-invalid': submittedEmo && g.dxexammedgen.errors }"></textarea>
+                                        </div>
+                                    
+                                    </div>
+
+                                    <div class="form-group row mb-2">
+                                    
+                                        <div class="col-sm-12">
+                                            <label for="inputCodPersonal"> Dx Resumen Medico </label>
+                                            <textarea rows="2" class="form-control form-control-sm" formControlName="resummed"
+                                            [ngClass]="{ 'is-invalid': submittedEmo && g.resummed.errors }"></textarea>
+                                        </div>
+                                    
+                                    </div>
+
+                                    <div class="form-group row mb-2">
+                                    
+                                        <div class="col-sm-12">
+                                            <label for="inputCodPersonal"> Dx Exam. Medico Clinica </label>
+                                            <textarea rows="2" class="form-control form-control-sm" formControlName="resummedclinica"
+                                            [ngClass]="{ 'is-invalid': submittedEmo && g.resummedclinica.errors }"></textarea>
+                                        </div>
+                                    
+                                    </div>
+
+                                    <div class="form-group row mb-2">
+                                    
+                                        <div class="col-sm-12">
+                                            <label for="inputCodPersonal"> Recomendacion </label>
+                                            <textarea rows="2" class="form-control form-control-sm" formControlName="recomend"
+                                            [ngClass]="{ 'is-invalid': submittedEmo && g.recomend.errors }"></textarea>
+                                        </div>
+                                    
+                                    </div>
+
+                                    <div class="form-group row mb-2">
+                                    
+                                        <div class="col-sm-12">
+                                            <label for="inputCodPersonal"> Recomendacion Clinica </label>
+                                            <textarea rows="2" class="form-control form-control-sm" formControlName="recomendclinica"
+                                            [ngClass]="{ 'is-invalid': submittedEmo && g.recomendclinica.errors }"></textarea>
+                                        </div>
+                                    
+                                    </div>
+
+                                    <div class="form-group row mb-2">
+
+                                        <div class="col-sm-4">
+                                            <label for="inputCodPersonal"> Aptitud Medica </label>
+                                            <select formControlName="codaptitud" class="form-control form-control-sm"
+                                                [ngClass]="{ 'is-invalid': submittedEmo && g.codaptitud.errors }">
+                                                <option value="" disabled>Seleccionar</option>
+                                                <option *ngFor="let apti of aptimed" [value]="apti.id">
+                                                    {{apti.deslarga}}
+                                                </option>
+                                            </select>
+                                        </div>
+
+
+                                        <div class="col-sm-6">
+                                            <label for="inputCodPersonaluno"> Restricciones </label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="restricciones" name="personaluno"
+                                                autocomplete="off"
+                                                [ngClass]="{ 'is-invalid': submittedEmo && g.restricciones.errors }">
+                                        </div>
+                                      
+                                    
+                                    </div>
+
+                                    <div class="form-group row mb-2">
+                                        <div class="col-sm-12 text-right">
+                                            <!--<button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>-->
+                                            <button type="submit" class="btn btn-success" #closePrincipal>Registrar</button>
+                                        </div>
+                                    </div>
+
+
+                                </form>
+                            </div>
+                        </div>
+
+
+
+
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="viewModalBuscarProgramacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Buscar Programacion</h5>
+                <button type="button" #closeProgram class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+
+                    <div class="col-sm-12">
+                        <form (ngSubmit)="onSearchProgramacionFilter()">
+
+                            <div class="form-group row">
+                                <div class="col-md-9">
+                                    <div class="input-group">
+                                        <select class="form-control form-control-sm col-md-3"
+                                            name="selectedBusquedaProgramacion"
+                                            [(ngModel)]="selectedBusquedaProgramacion">
+                                            <option value="documento">Documento</option>
+                                        </select>
+                                        <input type="text" name="searhInputProgramacion"
+                                            [(ngModel)]="searhInputProgramacion" class="form-control form-control-sm"
+                                            placeholder="Documento" autocomplete="off">
+                                        <button type="submit" class="btn btn-sm btn-info">
+                                            <i class="fa fa-search"></i> Buscar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+
+                    <div class="table-responsive">
+
+                        <table mat-table [dataSource]="proemoPenData" class="mat-elevation-z8">
+                        
+                            <ng-container matColumnDef="Opciones">
+                                <th mat-header-cell *matHeaderCellDef> Opciones </th>
+                                <td mat-cell *matCellDef="let programacion">
+                                    <button type="button" name="seleccionarP" (click)="onSelectProgramacion(programacion)" title="Seleccionar"
+                                        class="btn button-success btn-sm">
+                                        <i class="fas fa-check-circle"></i>
+                                    </button>
+                        
+                                </td>
+                            </ng-container>
+                        
+                            <ng-container matColumnDef="Empresa">
+                                <th mat-header-cell *matHeaderCellDef> Empresa </th>
+                                <td mat-cell *matCellDef="let programacion">
+                                    <p class="tabla">{{ programacion.empresa.desrazonsocial }}</p>
+                                </td>
+                            </ng-container>
+                        
+                            <ng-container matColumnDef="Sede">
+                                <th mat-header-cell *matHeaderCellDef> Sede </th>
+                                <td mat-cell *matCellDef="let programacion">
+                                    <p class="tabla">{{programacion.sucursal.nomsucursal}}</p>
+                                </td>
+                            </ng-container>
+                        
+                            <ng-container matColumnDef="Fecha">
+                                <th mat-header-cell *matHeaderCellDef> Fecha </th>
+                                <td mat-cell *matCellDef="let programacion">
+                                    <p class="tabla">{{programacion.programa.fechaprogram}}</p>
+                                </td>
+                            </ng-container>
+                        
+                            <ng-container matColumnDef="TipoEva">
+                                <th mat-header-cell *matHeaderCellDef> Tipo Evaluacion </th>
+                                <td mat-cell *matCellDef="let programacion">
+                                    <p class="tabla">{{programacion.programa.tblevaluacion.deslarga}}</p>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="Proveedor">
+                                <th mat-header-cell *matHeaderCellDef> Proveedor </th>
+                                <td mat-cell *matCellDef="let programacion">
+                                    <p class="tabla">{{programacion.programa.tblproveedor.deslarga}}</p>
+                                </td>
+                            </ng-container>
+                        
+                        
+                            <tr mat-header-row *matHeaderRowDef="proemoPenCol"></tr>
+                            <tr mat-row *matRowDef="let row; columns: proemoPenCol;"></tr>
+                        
+                        
+                        </table>
+                        
+                        <mat-paginator #paginatorEmoProPen [pageSizeOptions]="[6]" showFirstLastButtons>
+                        </mat-paginator>
+
+
+
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal - Cargar Data -->
+<div class="modal fade" id="viewModalCarga" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+
+        <div class="modal-content">
+            <form (ngSubmit)="onProcesarData()" [formGroup]="formCarga" class="form-horizontal">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Cargar Data</h5>
+                    <button type="button" #closeCarga class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+
+
+                        <div class="row">
+                            <div class="col-md-12">
+
+                                <div class="form-group row">
+                                    <label for="inputUsuarioNombre" class="col-sm-2 col-form-label">Plantilla</label>
+                                    <div class="col-sm-10">
+
+                                        <button class="btn btn-info btn-sm" type="button"
+                                            (click)="descargarPlanilla()"><i
+                                                class="fas fa-file-download"></i>&nbsp;Descargar</button>
+
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+
+                                    <div class="col-sm-6">
+                                        <label for="inputCodPersonal">Empresa </label>
+                                        <select (change)="onChangeEmpresaSucursal($event.target.value)"
+                                            formControlName="codempresa" class="form-control form-control-sm">
+                                            <option value="" disabled>Seleccionar</option>
+                                            <option *ngFor="let empresa of empresas" [value]="empresa.codempresa">
+                                                {{empresa.desrazonsocial}}
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <label for="inputCodPersonal">Sede </label>
+                                        <select formControlName="codsucursal" class="form-control form-control-sm">
+                                            <option value="" disabled>Seleccionar</option>
+                                            <option *ngFor="let sucursal of sucursales" [value]="sucursal.codsucursal">
+                                                {{sucursal.nomsucursal}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="form-group row">
+                                    <label for="inputPerfilDescripcion" class="col-sm-2 col-form-label">Cargar</label>
+                                    <div class="col-sm-10">
+                                        <input type="file" class="form-control form-control-sm"
+                                            placeholder="Nombre del Perfil" (change)="onFileSelected($event)"
+                                            #fileProducto autocomplete="off"
+                                            accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-success">Registrar</button>
+
+                    <button type="button" class="btn btn-secondary" (click)="onInformeData()" data-toggle="modal"
+                        data-target="#viewModalErroresLista">Informe</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="viewModalErroresLista" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Lista de Errores</h5>
+                <button type="button" #closeErrores class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+
+                    <div class="table-responsive">
+
+
+                        <table mat-table [dataSource]="erroresData" class="mat-elevation-z8">
+
+
+                            <ng-container matColumnDef="Linea">
+                                <th mat-header-cell *matHeaderCellDef> Linea </th>
+                                <td mat-cell *matCellDef="let error"> {{error.linea}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="Columna">
+                                <th mat-header-cell *matHeaderCellDef> Columna </th>
+                                <td mat-cell *matCellDef="let error"> {{error.columna}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="Dato">
+                                <th mat-header-cell *matHeaderCellDef> Dato </th>
+                                <td mat-cell *matCellDef="let error"> {{error.dato}} </td>
+                            </ng-container>
+
+
+                            <ng-container matColumnDef="Detalle">
+                                <th mat-header-cell *matHeaderCellDef> Detalle </th>
+                                <td mat-cell *matCellDef="let error"> {{error.detalle}} </td>
+                            </ng-container>
+
+
+                            <tr mat-header-row *matHeaderRowDef="erroresCol"></tr>
+                            <tr mat-row *matRowDef="let row; columns: erroresCol;"></tr>
+
+                        </table>
+
+                        <mat-paginator #paginatorErrores [pageSizeOptions]="[6]" showFirstLastButtons>
+                        </mat-paginator>
+
+
+
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+            </div>
+
+        </div>
+    </div>
+</div>

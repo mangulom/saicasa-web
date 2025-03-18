@@ -1,0 +1,1120 @@
+<div class="row">
+
+    <div class="col-12">
+        <div class="card divmargen">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="far fa-list-alt"></i>
+                    &nbsp;
+                    Registro de Accidentes Laborales
+                    &nbsp;
+                    <button type="button" class="btn btn-secondary btn-sm" (click)="onResetFormAccidente()"
+                        data-toggle="modal" data-target="#viewModalAccidente">
+                        <i class="far fa-plus-square"></i>
+                        Crear
+                    </button>
+                    
+
+                </h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+
+                <div class="col-sm-8">
+                    <form (ngSubmit)="onSearchAccidente()">
+                
+                        <div class="form-group row">
+                            <label for="inputUsuarioNombre" class="col-sm-2 col-form-label">Codigo Acci.: </label>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <input type="text" name="searchInputAccidente" [(ngModel)]="searchInputAccidente" class="form-control form-control-sm"
+                                        placeholder="Texto a buscar" autocomplete="off">
+                                    <button type="submit" class="btn btn-sm btn-info">
+                                        <i class="fa fa-search"></i> Buscar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                
+                    </form>
+                </div>
+
+                <div class="table-responsive">
+
+                    <table mat-table [dataSource]="accidenteData" class="mat-elevation-z8">
+
+                        <ng-container matColumnDef="Opciones">
+                            <th mat-header-cell *matHeaderCellDef> Opciones </th>
+                            <td mat-cell *matCellDef="let accidente">
+                                <button type="button" name="editar" (click)="onUpdateAccidente(accidente)"
+                                    title="Editar Accidente" data-toggle="modal" data-target="#viewModalAccidente"
+                                    class="btn button-edit btn-sm">
+                                    <i class="far fa-edit"></i>
+                                </button>
+  
+                                &nbsp;
+                                <button type="button" name="delete" title="eliminar Accidente"
+                                    (click)="deleteById(accidente)" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                                &nbsp;
+                                <button type="button" name="arch" title="arch" data-toggle="modal" data-target="#viewModalFileCarga"
+                                    (click)="onListAccidenteArchivos(accidente)" class="btn btn-success btn-sm">
+                                    <i class="fas fa-file-upload"></i>
+                                </button>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="Codigo">
+                            <th mat-header-cell *matHeaderCellDef> Codigo </th>
+                            <td mat-cell *matCellDef="let accidente"> {{accidente.codigo}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="DNI">
+                            <th mat-header-cell *matHeaderCellDef> DNI </th>
+                            <td mat-cell *matCellDef="let accidente"> {{accidente.personal.numdocidentidad}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="Nombre">
+                            <th mat-header-cell *matHeaderCellDef> Nombre </th>
+                            <td mat-cell *matCellDef="let accidente"> {{accidente.personal.apepaterno + ' ' +  accidente.personal.apematerno + ' ' +accidente.personal.nomtrabajador}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="Gravedad">
+                            <th mat-header-cell *matHeaderCellDef> Gravedad </th>
+                            <td mat-cell *matCellDef="let accidente"> {{accidente.tblgravacc.deslarga}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="TipoAcc">
+                            <th mat-header-cell *matHeaderCellDef> Tipo Accidente </th>
+                            <td mat-cell *matCellDef="let accidente"> {{accidente.tbltipacci.deslarga}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="Estado">
+                            <th mat-header-cell *matHeaderCellDef> Estado </th>
+                            <td mat-cell *matCellDef="let accidente"> {{accidente.tblestado.deslarga}} </td>
+                        </ng-container>
+
+
+                        <tr mat-header-row *matHeaderRowDef="accidenteCol"></tr>
+                        <tr mat-row *matRowDef="let row; columns: accidenteCol;"></tr>
+
+
+                    </table>
+
+                    <mat-paginator [pageSizeOptions]="[6, 10]" showFirstLastButtons></mat-paginator>
+
+                </div>
+
+
+            </div>
+            <!-- /.card-body -->
+        </div>
+
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->
+
+
+<!-- Modal -->
+<div class="modal fade" id="viewModalAccidente" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+
+            
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Registro de Formulario de Accidente</h5>
+                    <button type="button" #closebutton class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="background-color: rgba(255, 255, 255, 0.904)">
+                    <div class="container-fluid">
+                        <div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                
+                                <form (ngSubmit)="onSearchPersonal()">
+                                    
+                                    <p><b>INFORMACIÓN DEL TRABAJADOR ACCIDENTADO: </b></p>
+                                    <div class="col-md-4">
+                                    <div class="input-group mb-2">
+                                        <label for="inputPerfilDescripcion" class="col-sm-3 col-form-label">DNI</label>
+                                        <input type="text" class="form-control form-control-sm" [(ngModel)]="searchInput" name="searchInput"
+                                            placeholder="Ingrese DNI" aria-label="Buscar" aria-describedby="basic-addon2" autocomplete="off">
+                                            &nbsp;
+                                        <div class="input-group-append">
+                                            <button class="btn btn-info btn-sm" type="submit"><i class="fa fa-search"></i> Buscar</button>
+                                        </div>
+                                    </div>
+                                    </div>
+
+
+                                </form>
+
+                            </div>
+                        </div>
+                        
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <form [formGroup]="formAccidente" (ngSubmit)="onSubmit()" class="form-horizontal">
+
+                                    <div class="form-group row mb-2">
+                                        <div class="col-sm-4">
+                                            <label for="inputCodPersonal">Empresa </label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="perempresa" autocomplete="off">
+                                        </div>
+                                    
+                                        <div class="col-sm-4">
+                                            <label for="inputCodPersonal">Sucursal </label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="persede" autocomplete="off">
+                                        </div>
+                                    
+                                        <div class="col-sm-4">
+                                            <label for="inputCodPersonal">Area </label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="nomarea" autocomplete="off">
+                                        </div>
+                                    
+                                    </div>
+                                    
+                                    <div class="form-group row mb-2">
+                                        <div class="col-sm-4">
+                                            <label for="inputCodPersonal">Apellido Paterno </label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="apepaterno" autocomplete="off">
+                                        </div>
+                                    
+                                        <div class="col-sm-4">
+                                            <label for="inputCodPersonal">Apellido Materno </label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="apematerno" autocomplete="off">
+                                        </div>
+                                    
+                                        <div class="col-sm-4">
+                                            <label for="inputCodPersonal">Nombre </label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="nomtrabajador" autocomplete="off">
+                                        </div>
+                                    
+                                    </div>
+
+                                    <div class="form-group row mb-2">
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonal">Fecha Nac </label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="fechanac" autocomplete="off">
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonal">Edad </label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="edad" autocomplete="off">
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonal">Sexo </label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="sexo" autocomplete="off">
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonal">HC </label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="hc" autocomplete="off">
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonal">Telefono </label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="telefono" autocomplete="off">
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonal">Condicion </label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="condicion" autocomplete="off">
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group row mb-2">
+                                        <div class="col-sm-4">
+                                            <label for="inputCodPersonal">Direccion </label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="direccion" autocomplete="off">
+                                        </div>
+                                   
+                                        <div class="col-sm-3">
+                                            <label for="inputCodPersonal">Distrito </label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="distrito" autocomplete="off">
+                                        </div>
+                                        <div class="col-sm-5">
+                                            <label for="inputCodPersonal">Puesto </label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="puesto" autocomplete="off">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row mb-2">
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonal">Fecha Ingreso </label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="fechaingreso" autocomplete="off">
+                                        </div>
+                                   
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonal">Antiguedad en el Trabajo</label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="antiguedad" autocomplete="off">
+                                        </div>
+
+                                        <div class="col-sm-4">
+                                            <label for="inputCodPersonal">Tipo Contrato</label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="tipoplanilla" autocomplete="off">
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonal">Tiempo Experiencia</label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="tiempoexper" autocomplete="off">
+                                        </div>
+
+                                    </div>
+
+
+                                    <div>
+                                        &nbsp;
+                                    <p><b>INFORMACION DEL ACCIDENTE: </b></p>
+
+                                    <div class="form-group row mb-2">
+
+                                        <div class="col-sm-3">
+                                            <label for="inputCodPersonal">Empresa </label>
+                                            <select (change)="onChangeEmpresaSucursal($event.target.value)" formControlName="codempresa"
+                                                class="form-control form-control-sm" [ngClass]="{ 'is-invalid': submitted && f.codempresa.errors }">
+                                                <option value="" disabled>Seleccionar</option>
+                                                <option *ngFor="let empresa of empresas" [value]="empresa.codempresa">
+                                                    {{empresa.desrazonsocial}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="col-sm-3">
+                                            <label for="inputCodPersonal">Sede </label>
+                                            <select formControlName="sede" class="form-control form-control-sm"
+                                                [ngClass]="{ 'is-invalid': submitted && f.sede.errors }">
+                                                <option value="" disabled>Seleccionar</option>
+                                                <option *ngFor="let sucursal of sucursales" [value]="sucursal.codsucursal">
+                                                    {{sucursal.nomsucursal}}
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonal">Fecha Accidente </label>
+                                            <input type="date" class="form-control form-control-sm" formControlName="fechaacci" autocomplete="off"
+                                            [ngClass]="{ 'is-invalid': submitted && f.fechaacci.errors }">
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonal">Hora Accidente</label>
+                                            <input type="time" class="form-control form-control-sm" formControlName="horaacci" autocomplete="off"
+                                            [ngClass]="{ 'is-invalid': submitted && f.horaacci.errors }">
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonal">Mes</label>
+                                            <select formControlName="mes" class="form-control form-control-sm"
+                                            [ngClass]="{ 'is-invalid': submitted && f.mes.errors }">
+                                                <option value="" disabled>Seleccionar</option>
+                                                <option *ngFor="let tipo of meses" [value]="tipo.id">
+                                                    {{tipo.deslarga}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                       
+                                    </div>
+
+                                    <div class="form-group row mb-2">
+                                    
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonal">Fecha de Inicio de Turno </label>
+                                            <input type="date" class="form-control form-control-sm" formControlName="fechainiturn" autocomplete="off"
+                                            [ngClass]="{ 'is-invalid': submitted && f.fechainiturn.errors }">
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonal">Hora de Inicio de Turno </label>
+                                            <input type="time" class="form-control form-control-sm" formControlName="horainiturn" autocomplete="off"
+                                            [ngClass]="{ 'is-invalid': submitted && f.horainiturn.errors }">
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonal">Nro Horas Trabajadas </label>
+                                            <input type="number" class="form-control form-control-sm" formControlName="nrohrstrab" autocomplete="off"
+                                            [ngClass]="{ 'is-invalid': submitted && f.nrohrstrab.errors }">
+                                        </div>
+
+                                        <div class="col-sm-3">
+                                            <label for="inputCodPersonal">Gravedad del Accidente </label>
+                                            <select formControlName="graveacc" class="form-control form-control-sm" 
+                                            [ngClass]="{ 'is-invalid': submitted && f.graveacc.errors }">
+                                                <option value="" disabled>Seleccionar</option>
+                                                <option *ngFor="let tipo of gravedadAccidentes" [value]="tipo.id">
+                                                    {{tipo.deslarga}}
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-sm-3">
+                                            <label for="inputCodPersonal">Tipo Accidente </label>
+                                            <select formControlName="tipoacci" class="form-control form-control-sm"
+                                            [ngClass]="{ 'is-invalid': submitted && f.tipoacci.errors }">
+                                                <option value="" disabled>Seleccionar</option>
+                                                <option *ngFor="let tipo of tiposAccidentes" [value]="tipo.id">
+                                                    {{tipo.deslarga}}
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group row mb-2">
+                                    
+                                        <div class="col-sm-6">
+                                            <label for="inputCodPersonal">Lugar del Accidente </label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="lugaracci" autocomplete="off"
+                                            [ngClass]="{ 'is-invalid': submitted && f.lugaracci.errors }">
+                                        </div>
+                                    
+                                        <div class="col-sm-6">
+                                            <label for="inputCodPersonal">Actividad del Accidente </label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="actividadacci" autocomplete="off"
+                                            [ngClass]="{ 'is-invalid': submitted && f.actividadacci.errors }">
+                                        </div>
+                                     
+                                    </div>
+
+
+                                    <div class="form-group row mb-2">
+
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonal">Nro Trabajadores Afectados </label>
+                                            <input type="number" class="form-control form-control-sm" formControlName="nrotrabafec" autocomplete="off"
+                                            [ngClass]="{ 'is-invalid': submitted && f.nrotrabafec.errors }">
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonal">Nro Dias Desc </label>
+                                            <input type="number" class="form-control form-control-sm" formControlName="diasdm" autocomplete="off"
+                                            [ngClass]="{ 'is-invalid': submitted && f.diasdm.errors }">
+                                        </div>
+
+                                        <div class="col-sm-3">
+                                            <label for="inputCodPersonal">Diagnostico </label>
+                                            <input type="text" class="form-control form-control-sm" formControlName="diagnacci" autocomplete="off"
+                                            [ngClass]="{ 'is-invalid': submitted && f.diagnacci.errors }">
+                                        </div>
+
+                                        <div class="col-sm-3">
+                                            <label for="inputCodPersonal">Agente Caus </label>
+                                            <select formControlName="agentecaus" class="form-control form-control-sm"
+                                            [ngClass]="{ 'is-invalid': submitted && f.agentecaus.errors }">
+                                                <option value="" disabled>Seleccionar</option>
+                                                <option *ngFor="let caus of agentesCausantes" [value]="caus.id">
+                                                    {{caus.deslarga}}
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonal">CIE </label>
+                                            <select formControlName="cie" class="form-control form-control-sm"
+                                            [ngClass]="{ 'is-invalid': submitted && f.cie.errors }">
+                                                <option value="" disabled>Seleccionar</option>
+                                                <option *ngFor="let tipo of cies" [value]="tipo.id">
+                                                    {{tipo.deslarga}}
+                                                </option>
+                                            </select>
+                                        </div>                                       
+                                    
+                                    </div>
+
+                                    <div class="form-group row mb-2">
+                                        <div class="col-sm-12">
+                                            <label for="inputCodPersonal"> Descripcion de Accidente </label>
+                                            <textarea rows="3" class="form-control form-control-sm" formControlName="descacci"
+                                            [ngClass]="{ 'is-invalid': submitted && f.descacci.errors }"></textarea>
+                                        </div>
+                                    </div>
+
+                                    </div>
+
+
+                                    <div>
+                                        <div class="form-group row mb-2">
+
+                                            <div class="col-sm-4">
+                                                <label for="inputCodPersonal">Tipo Lesion </label>
+                                                <select formControlName="tipoless" class="form-control form-control-sm"
+                                                [ngClass]="{ 'is-invalid': submitted && f.tipoless.errors }">
+                                                    <option value="" disabled>Seleccionar</option>
+                                                    <option *ngFor="let tipo of tipoLesiones" [value]="tipo.id">
+                                                        {{tipo.deslarga}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                    
+                                            <div class="col-sm-2">
+                                                <label for="inputCodPersonal">Parte del Cuerpo Afectado </label>
+                                                <select formControlName="partcuerples" class="form-control form-control-sm"
+                                                [ngClass]="{ 'is-invalid': submitted && f.partcuerples.errors }">
+                                                    <option value="" disabled>Seleccionar</option>
+                                                    <option *ngFor="let tipo of parteAfectadas" [value]="tipo.id">
+                                                        {{tipo.deslarga}}
+                                                    </option>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group col-md-3" style="margin-top:25px">
+                                                <label for="inputCodPersonaldos">Causas Inmed. : </label>
+                                            
+                                                <button class="btn btn-info btn-sm" style="margin-left:20px" type="button" data-toggle="modal"
+                                                    data-target="#viewModalCausaInmediata"><i class="fa fa-search"></i>&nbsp;Selecc.</button>
+                                            </div>
+                                            
+                                            <div class="form-group col-md-3" style="margin-top:25px">
+                                                <label for="inputCodPersonaldos">Causas Basicas. : </label>
+                                            
+                                                <button class="btn btn-info btn-sm" style="margin-left:20px" type="button" data-toggle="modal"
+                                                    data-target="#viewModalCausaBasicas"><i class="fa fa-search"></i>&nbsp;Selecc.</button>
+                                            </div>
+                                    
+                                    
+                                        </div>
+
+                                        <div class="form-group row mb-2">
+                                        
+                                            <label for="inputUsuarioNombre" class="col-sm-2 col-form-label">Responsable</label>
+                                            <div class="form-group col-md-3">
+                                                <button class="btn btn-info btn-sm" type="button" data-toggle="modal"
+                                                    data-target="#viewModalPersonalesAsignar"><i class="fa fa-search"></i>&nbsp;Buscar</button>
+                                            </div>
+                                        
+                                        </div>
+
+                                        <div class="form-group row mb-2">
+
+                                            <div class="col-sm-8">
+
+
+                                                <div class="table-responsive">
+                                                
+                                                    <table mat-table [dataSource]="AsignResponsableData" class="mat-elevation-z8">
+                                                
+                                                        <ng-container matColumnDef="Opciones">
+                                                            <th mat-header-cell *matHeaderCellDef> Opciones </th>
+                                                            <td mat-cell *matCellDef="let personal ;let i = index">
+                                                                <button type="button" class="btn btn-danger btn-sm" (click)="deleteAsigPersonal(i)">
+                                                                    <i class="fas fa-times"></i>
+                                                                </button>
+                                                            </td>
+                                                        </ng-container>
+                                                
+                                                        <ng-container matColumnDef="Nombre">
+                                                            <th mat-header-cell *matHeaderCellDef> Nombre </th>
+                                                            <td mat-cell *matCellDef="let personal">
+                                                                <p class="tabla">{{personal.apepaterno + ' ' + personal.apematerno + ' '
+                                                                    +personal.nomtrabajador}}</p>
+                                                            </td>
+                                                        </ng-container>
+                                                
+                                                        <ng-container matColumnDef="Cargo">
+                                                            <th mat-header-cell *matHeaderCellDef> Cargo </th>
+                                                            <td mat-cell *matCellDef="let personal">
+                                                                <p class="tabla">{{personal.descargo}}</p>
+                                                            </td>
+                                                        </ng-container>
+                                                
+                                                        <tr mat-header-row *matHeaderRowDef="AsignResponsableCol"></tr>
+                                                        <tr mat-row *matRowDef="let row; columns: AsignResponsableCol;"></tr>
+                                                
+                                                
+                                                    </table>
+                                                
+                                                    <mat-paginator #paginatorAsignResponsable [pageSizeOptions]="[6]" showFirstLastButtons>
+                                                    </mat-paginator>
+                                                
+                                                </div>
+
+
+                                            </div>                                            
+
+                                        </div>
+
+                                    
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <div class="col-sm-12 text-right">
+                                            <!--<button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>-->
+                                            
+                                            <button type="submit" class="btn btn-info" #closeBtn>Registrar</button>
+                                        </div>
+                                    </div>
+                                    
+                                </form>
+                            </div>
+                        </div>
+
+
+                    </div>
+            
+                </div>
+                <div class="modal-footer">
+                    
+                </div>
+            
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="viewModalPersonalesAsignar" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Asignar Responsable</h5>
+                <button type="button" #closeSubbutton class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+
+                    <div class="col-sm-12">
+                        <form (ngSubmit)="onSearchPersonalResponsable()">
+
+                            <div class="form-group row">
+                                <div class="col-md-9">
+                                    <div class="input-group">
+                                        <select class="form-control form-control-sm col-md-3" name="selectedBusquedaAsign"
+                                            [(ngModel)]="selectedBusquedaAsign">
+                                            <option value="Documento">Documento</option>
+                                            <option value="Nombres">Apellidos y Nombres</option>
+                                        </select>
+                                        <input type="text" name="searhInputAsignar" [(ngModel)]="searhInputAsignar"
+                                            class="form-control form-control-sm" placeholder="Texto a buscar" autocomplete="off">
+                                        <button type="submit" class="btn btn-sm btn-info">
+                                            <i class="fa fa-search"></i> Buscar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+
+
+                    <div class="table-responsive">
+
+                        <table mat-table [dataSource]="responsableData" class="mat-elevation-z8">
+
+                            <ng-container matColumnDef="Opciones">
+                                <th mat-header-cell *matHeaderCellDef> Opciones </th>
+                                <td mat-cell *matCellDef="let personal">
+                                    <button type="button" name="editar" (click)="selectResponsable(personal)"
+                                        title="Seleccionar" class="btn button-success btn-sm">
+                                        <i class="fas fa-check-circle"></i>
+                                    </button>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="Nombre">
+                                <th mat-header-cell *matHeaderCellDef> Nombre </th>
+                                <td mat-cell *matCellDef="let personal">
+                                    <p class="tabla">{{personal.apepaterno + ' ' + personal.apematerno + ' '
+                                        +personal.nomtrabajador}}</p>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="DNI">
+                                <th mat-header-cell *matHeaderCellDef> Documento </th>
+                                <td mat-cell *matCellDef="let personal">
+                                    <p class="tabla">{{personal.numdocidentidad}}</p>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="Cargo">
+                                <th mat-header-cell *matHeaderCellDef> Cargo </th>
+                                <td mat-cell *matCellDef="let personal">
+                                    <p class="tabla">{{personal.descargo}}</p>
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="responsableCol"></tr>
+                            <tr mat-row *matRowDef="let row; columns: responsableCol;"></tr>
+
+
+                        </table>
+
+                        <mat-paginator #paginatorresponsable [pageSizeOptions]="[6]" showFirstLastButtons>
+                        </mat-paginator>
+
+                    </div>
+
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="viewModalPersonal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Buscar Trabajador</h5>
+                    <button type="button" #closeSubbutton class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+
+                        <div class="col-sm-8">
+                            <mat-form-field>
+                                <mat-label>Buscar</mat-label>
+                                <input matInput (keyup)="applyFilter($event)" placeholder="Buscar" #input autocomplete="off">
+                            </mat-form-field>
+                        </div>
+                        
+                        <div class="table-responsive">
+
+
+                            <table mat-table [dataSource]="personalData" class="mat-elevation-z8">
+                            
+                                <ng-container matColumnDef="Opciones">
+                                    <th mat-header-cell *matHeaderCellDef> Opciones </th>
+                                    <td mat-cell *matCellDef="let personal">
+                                        <button type="button" name="editar" (click)="selectPersonal(personal)" title="Seleccionar" 
+                                            class="btn button-success btn-sm">
+                                            <i class="fas fa-check-circle"></i>
+                                        </button>
+                            
+                                    </td>
+                                </ng-container>
+                            
+                                <ng-container matColumnDef="Nombre">
+                                    <th mat-header-cell *matHeaderCellDef> Nombre </th>
+                                    <td mat-cell *matCellDef="let personal"> 
+                                        <p class="tabla">{{personal.apepaterno + ' ' + personal.apematerno + ' ' +personal.nomtrabajador}}</p> </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="Area">
+                                    <th mat-header-cell *matHeaderCellDef> Nombre </th>
+                                    <td mat-cell *matCellDef="let personal"> 
+                                        <p class="tabla">{{personal.desareas}}</p> </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="Cargo">
+                                    <th mat-header-cell *matHeaderCellDef> Cargo </th>
+                                    <td mat-cell *matCellDef="let personal"> 
+                                        <p class="tabla">{{personal.descargo}}</p> </td>
+                                </ng-container>
+                            
+                                <tr mat-header-row *matHeaderRowDef="personalCol"></tr>
+                                <tr mat-row *matRowDef="let row; columns: personalCol;"></tr>
+                            
+                            
+                            </table>
+                            
+                            <mat-paginator #paginatorpersonal [pageSizeOptions]="[6]" showFirstLastButtons></mat-paginator>
+
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                </div>
+           
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="viewModalCausaInmediata" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Causas Inmediatas</h5>
+                <button type="button" #closeCausaInme class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+
+    
+                        <div class="row">
+                            <div class="border col-sm-6">
+                                <p><b>ACTO INSEGURO</b></p>
+                                <form [formGroup]="formSelecActoInseguro" (ngSubmit)="onSaveActoInseg()" class="form-horizontal">
+                                    <div class="row">
+                                        <div class="col-sm-10">
+                                            <select formControlName="codigo" class="form-control form-control-sm">
+                                                <option value="" disabled>Seleccionar</option>
+                                                <option *ngFor="let acto of actoInseguros" [value]="acto.id">
+                                                    {{acto.deslarga}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <button class="btn btn-success btn-sm" type="submit">
+                                                <i class="far fa-save"></i></button>
+                                        </div>
+                                        
+                                    </div>
+                                </form>
+                                &nbsp;
+                                <div class="table-responsive">
+
+                                    <table mat-table [dataSource]="asignActosInseguroData" class="mat-elevation-z8">
+                                    
+                                        <ng-container matColumnDef="Opciones">
+                                            <th mat-header-cell *matHeaderCellDef> </th>
+                                            <td mat-cell *matCellDef="let acto;let i = index">
+                                                <button type="button" class="btn btn-danger btn-sm" (click)="deleteActoInseg(i)">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </td>
+                                        </ng-container>
+                                    
+                                        <ng-container matColumnDef="Nombre">
+                                            <th mat-header-cell *matHeaderCellDef> Nombre </th>
+                                            <td mat-cell *matCellDef="let acto">
+                                                <p style="font-size:80%;"> {{acto.deslarga}} </p>
+                                            </td>
+                                        </ng-container>
+
+                                        <tr mat-header-row *matHeaderRowDef="asignActosInseguroCol"></tr>
+                                        <tr mat-row *matRowDef="let row; columns: asignActosInseguroCol;"></tr>
+                                    
+                                    </table>
+                                    
+                                    <mat-paginator #paginatorActoInseg [pageSizeOptions]="[6]" showFirstLastButtons>
+                                    </mat-paginator>
+
+                                    
+                                </div>
+                                
+                            </div>
+                        
+                        
+                            <div class="border col-sm-6">
+                                <p><b>CONDICION INSEGURA</b></p>
+                                <form [formGroup]="formSelecCondInsegura" (ngSubmit)="onSaveCondInseg()" class="form-horizontal">
+                                    <div class="row">
+                            
+                                        <div class="col-sm-10">
+                                            <select formControlName="codigo" class="form-control form-control-sm">
+                                                <option value="" disabled>Seleccionar</option>
+                                                <option *ngFor="let condicion of condInseguros" [value]="condicion.id">
+                                                    {{condicion.deslarga}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <button class="btn btn-success btn-sm" type="submit">
+                                                <i class="far fa-save"></i></button>
+                                        </div>
+                            
+                                    </div>
+                                </form>
+                                &nbsp;
+                                <div class="table-responsive">
+                                    
+                                    <table mat-table [dataSource]="asignCondInseguraData" class="mat-elevation-z8">
+                                    
+                                        <ng-container matColumnDef="Opciones">
+                                            <th mat-header-cell *matHeaderCellDef> </th>
+                                            <td mat-cell *matCellDef="let acto;let i = index">
+                                                <button type="button" class="btn btn-danger btn-sm" (click)="deleteCondInseg(i)">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </td>
+                                        </ng-container>
+                                    
+                                        <ng-container matColumnDef="Nombre">
+                                            <th mat-header-cell *matHeaderCellDef> Nombre </th>
+                                            <td mat-cell *matCellDef="let acto">
+                                                <p style="font-size:80%;"> {{acto.deslarga}} </p>
+                                            </td>
+                                        </ng-container>
+                                    
+                                        <tr mat-header-row *matHeaderRowDef="asignCondInseguraCol"></tr>
+                                        <tr mat-row *matRowDef="let row; columns: asignCondInseguraCol;"></tr>
+                                    
+                                    </table>
+                                    
+                                    <mat-paginator #paginatorCondInseg [pageSizeOptions]="[6]" showFirstLastButtons>
+                                    </mat-paginator>
+
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="viewModalCausaBasicas" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Causas Basicas</h5>
+                <button type="button" #closeCausaInme class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+
+
+                    <div class="row">
+                        <div class="border col-sm-6">
+                            <p><b>FACTORES PERSONALES</b></p>
+                            <form [formGroup]="formSelecFactPersonal" (ngSubmit)="onSaveFactoresPersonales()"
+                                class="form-horizontal">
+                                <div class="row">
+                                    <div class="col-sm-10">
+                                        <select formControlName="codigo" class="form-control form-control-sm">
+                                            <option value="" disabled>Seleccionar</option>
+                                            <option *ngFor="let perso of factPersonales" [value]="perso.id">
+                                                {{perso.deslarga}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button class="btn btn-success btn-sm" type="submit">
+                                            <i class="far fa-save"></i></button>
+                                    </div>
+
+                                </div>
+                            </form>
+                            &nbsp;
+                            <div class="table-responsive">
+
+                                <table mat-table [dataSource]="asignFacPersonalData" class="mat-elevation-z8">
+
+                                    <ng-container matColumnDef="Opciones">
+                                        <th mat-header-cell *matHeaderCellDef> </th>
+                                        <td mat-cell *matCellDef="let acto;let i = index">
+                                            <button type="button" class="btn btn-danger btn-sm"
+                                                (click)="deleteFactoresPersonales(i)">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="Nombre">
+                                        <th mat-header-cell *matHeaderCellDef> Nombre </th>
+                                        <td mat-cell *matCellDef="let acto">
+                                            <p style="font-size:80%;"> {{acto.deslarga}} </p>
+                                        </td>
+                                    </ng-container>
+
+                                    <tr mat-header-row *matHeaderRowDef="asignFacPersonalCol"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: asignFacPersonalCol;"></tr>
+
+                                </table>
+
+                                <mat-paginator #paginatorFactPersonal [pageSizeOptions]="[6]" showFirstLastButtons>
+                                </mat-paginator>
+
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="border col-sm-6">
+                            <p><b>FACTORES LABORALES</b></p>
+                            <form [formGroup]="formSelecFactLaboral" (ngSubmit)="onSaveFactoresLaborales()"
+                                class="form-horizontal">
+                                <div class="row">
+
+                                    <div class="col-sm-10">
+                                        <select formControlName="codigo" class="form-control form-control-sm">
+                                            <option value="" disabled>Seleccionar</option>
+                                            <option *ngFor="let laboral of factLaborales" [value]="laboral.id">
+                                                {{laboral.deslarga}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button class="btn btn-success btn-sm" type="submit">
+                                            <i class="far fa-save"></i></button>
+                                    </div>
+
+                                </div>
+                            </form>
+                            &nbsp;
+                            <div class="table-responsive">
+
+                                <table mat-table [dataSource]="asignFacLaboralData" class="mat-elevation-z8">
+
+                                    <ng-container matColumnDef="Opciones">
+                                        <th mat-header-cell *matHeaderCellDef> </th>
+                                        <td mat-cell *matCellDef="let acto;let i = index">
+                                            <button type="button" class="btn btn-danger btn-sm"
+                                                (click)="deleteFactoresLaborales(i)">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="Nombre">
+                                        <th mat-header-cell *matHeaderCellDef> Nombre </th>
+                                        <td mat-cell *matCellDef="let acto">
+                                            <p style="font-size:80%;"> {{acto.deslarga}} </p>
+                                        </td>
+                                    </ng-container>
+
+                                    <tr mat-header-row *matHeaderRowDef="asignFacLaboralCol"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: asignFacLaboralCol;"></tr>
+
+                                </table>
+
+                                <mat-paginator #paginatorFactLaboral [pageSizeOptions]="[6]" showFirstLastButtons>
+                                </mat-paginator>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal - FILE CHARGE -->
+<div class="modal fade" id="viewModalFileCarga" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Archivos</h5>
+                <button type="button" #closeCarga class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <form (ngSubmit)="onFileCharger()" [formGroup]="formFileCarga" class="form-horizontal">
+                        <div class="row">
+
+                            <div class="col-md-12">
+
+                                <div class="form-group row">
+                                    <label for="inputPerfilDescripcion" class="col-sm-2 col-form-label">Cargar</label>
+                                    <div class="col-sm-10">
+                                        <input type="file" class="form-control form-control-sm"
+                                            placeholder="Nombre del Perfil" (change)="onFileSelectedAccidente($event)"
+                                            #fileAccidentes autocomplete="off">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group row mb-2">
+                                    <div class="col-sm-12 text-right">
+                                        <!--<button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>-->
+                                        <button type="submit" title="Registrar Archivo" class="btn btn-success"
+                                            #closeBtn>Registrar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="table-responsive">
+
+                        <table mat-table [dataSource]="AccidentesArchivoData" class="mat-elevation-z8">
+
+                            <ng-container matColumnDef="Opciones">
+                                <th mat-header-cell *matHeaderCellDef> Opciones </th>
+                                <td mat-cell *matCellDef="let archi">
+
+                                    <button type="button" name="proemo" title="Descargar Archivo"
+                                        class="btn btn-success btn-sm" (click)="descargarFile(archi)">
+                                        <i class="fas fa-file-download"></i>
+                                    </button>
+
+                                    &nbsp;
+                                    <button type="button" name="proemo" title="Eliminar Registro"
+                                        class="btn btn-danger btn-sm" (click)="deleteByIdAccidenteArchivo(archi)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="Nombre">
+                                <th mat-header-cell *matHeaderCellDef> Nombre </th>
+                                <td mat-cell *matCellDef="let archi">
+                                    <p class="tabla">{{ archi.archivo.nombre }}</p>
+                                </td>
+                            </ng-container>
+
+
+                            <tr mat-header-row *matHeaderRowDef="AccidentesArchivoCol"></tr>
+                            <tr mat-row *matRowDef="let row; columns: AccidentesArchivoCol;"></tr>
+
+
+                        </table>
+
+                        <mat-paginator #paginatorarchivos [pageSizeOptions]="[6]" showFirstLastButtons>
+                        </mat-paginator>
+
+
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+            </div>
+
+        </div>
+
+    </div>
+</div>

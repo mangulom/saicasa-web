@@ -1,0 +1,1 @@
+Copiar docs_html en node_modules/admin_lte. Es importante para que la aplicación compile.

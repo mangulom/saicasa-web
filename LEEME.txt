@@ -1,0 +1,1 @@
+Ejecutar el comando: set NODE_OPTIONS=--openssl-legacy-provider antes de compilar. Si usas powershell, el comando es: $env:NODE_OPTIONS = "--openssl-legacy-provider"

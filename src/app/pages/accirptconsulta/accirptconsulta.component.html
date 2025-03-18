@@ -1,0 +1,346 @@
+<div class="row">
+
+    <div class="col-12">
+        <div class="card divmargen">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="far fa-list-alt"></i>
+                    &nbsp;
+                    Consulta Accidente de Trabajo
+                </h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+
+                <div class="col-sm-12">
+                    <form (ngSubmit)="onSearchFilter()" [formGroup]="formBusquedad">
+                
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <div class="input-group">
+                                
+                                    <label for="inputUsuarioNombre" class="col-sm-1 col-form-label">Fecha Ini: </label>
+                                    <div class="col-sm-2">
+                                        <input type="date" class="form-control form-control-sm" formControlName="fechaini"
+                                            name="personaluno" autocomplete="off">
+                                    </div>
+                                    <label for="inputUsuarioNombre" class="col-sm-1 col-form-label">Fecha Fin: </label>
+                                    <div class="col-sm-2">
+                                        <input type="date" class="form-control form-control-sm" formControlName="fechafin"
+                                            name="personaluno" autocomplete="off">
+                                    </div>
+                
+                                    <button type="submit" class="btn btn-sm btn-info">
+                                        <i class="fa fa-search"></i> Buscar
+                                    </button>
+                
+                
+                                </div>
+                            </div>
+                        </div>
+                
+                    </form>
+                </div>
+
+                <div class="table-responsive">
+
+                    <table mat-table [dataSource]="accidenteData" class="mat-elevation-z8">
+
+                        <ng-container matColumnDef="Opciones">
+                            <th mat-header-cell *matHeaderCellDef> Opciones </th>
+                            <td mat-cell *matCellDef="let accidente">
+                                <button type="button" name="editar" data-toggle="modal" data-target="#viewModalAccidente"
+                                    (click)="onChargeAccidente(accidente)" title="Agregar Medidas Correctivas" class="btn btn-success btn-sm">
+                                    <i class="far fa-eye"></i>
+                                </button>
+                                &nbsp;
+                                <button type="button" class="btn btn-danger btn-sm" (click)="descargarPdf(accidente)">
+                                    <i class="fas fa-file-pdf"></i>
+                                </button>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="Codigo">
+                            <th mat-header-cell *matHeaderCellDef> Codigo </th>
+                            <td mat-cell *matCellDef="let accidente"> {{accidente.codigo}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="DNI">
+                            <th mat-header-cell *matHeaderCellDef> DNI </th>
+                            <td mat-cell *matCellDef="let accidente"> {{accidente.personal.numdocidentidad}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="Nombre">
+                            <th mat-header-cell *matHeaderCellDef> Nombre </th>
+                            <td mat-cell *matCellDef="let accidente"> {{accidente.personal.apepaterno + ' ' +
+                                accidente.personal.apematerno
+                                + ' ' +accidente.personal.nomtrabajador}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="Gravedad">
+                            <th mat-header-cell *matHeaderCellDef> Gravedad </th>
+                            <td mat-cell *matCellDef="let accidente"> {{accidente.tblgravacc.deslarga}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="TipoAcc">
+                            <th mat-header-cell *matHeaderCellDef> Tipo Accidente </th>
+                            <td mat-cell *matCellDef="let accidente"> {{accidente.tbltipacci.deslarga}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="Estado">
+                            <th mat-header-cell *matHeaderCellDef> Estado </th>
+                            <td mat-cell *matCellDef="let accidente"> {{accidente.tblestado.deslarga}} </td>
+                        </ng-container>
+
+
+                        <tr mat-header-row *matHeaderRowDef="accidenteCol"></tr>
+                        <tr mat-row *matRowDef="let row; columns: accidenteCol;"></tr>
+
+
+                    </table>
+
+                    <mat-paginator #paginatorAccidentes [pageSizeOptions]="[6, 10]" showFirstLastButtons></mat-paginator>
+
+                </div>
+
+
+            </div>
+            <!-- /.card-body -->
+        </div>
+
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->
+
+
+<!-- Modal -->
+<div class="modal fade" id="viewModalAccidente" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Accidente Laboral</h5>
+                <button type="button" #closebutton class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="background-color: rgba(255, 255, 255, 0.904)">
+                <div class="container-fluid">
+
+
+                    <div class="row">
+
+                        <div class="col-md-12">
+
+                            <form [formGroup]="formAccidente" class="form-horizontal">
+
+                            <p><b>DATOS DEL ACCIDENTADO: </b></p>
+                            
+                            <div class="form-group row mb-2">
+                                <div class="col-sm-4">
+                                    <label for="inputCodPersonal">Empresa </label>
+                                    <input type="text" class="form-control form-control-sm" formControlName="perempresa" autocomplete="off">
+                                </div>
+                            
+                                <div class="col-sm-4">
+                                    <label for="inputCodPersonal">Sucursal </label>
+                                    <input type="text" class="form-control form-control-sm" formControlName="persede" autocomplete="off">
+                                </div>
+                            
+                                <div class="col-sm-4">
+                                    <label for="inputCodPersonal">Area </label>
+                                    <input type="text" class="form-control form-control-sm" formControlName="nomarea" autocomplete="off">
+                                </div>
+                            
+                            </div>
+                            
+                            <div class="form-group row mb-2">
+                                <div class="col-sm-4">
+                                    <label for="inputCodPersonal">Apellido Paterno </label>
+                                    <input type="text" class="form-control form-control-sm" formControlName="apepaterno" autocomplete="off">
+                                </div>
+                            
+                                <div class="col-sm-4">
+                                    <label for="inputCodPersonal">Apellido Materno </label>
+                                    <input type="text" class="form-control form-control-sm" formControlName="apematerno" autocomplete="off">
+                                </div>
+                            
+                                <div class="col-sm-4">
+                                    <label for="inputCodPersonal">Nombre </label>
+                                    <input type="text" class="form-control form-control-sm" formControlName="nomtrabajador" autocomplete="off">
+                                </div>
+                            
+                            </div>
+                            
+                            <div class="form-group row mb-2">
+                            
+                                <div class="col-sm-2">
+                                    <label for="inputCodPersonal">DNI </label>
+                                    <input type="text" class="form-control form-control-sm" formControlName="numdocidentidad" autocomplete="off">
+                                </div>
+                            
+                            
+                                <div class="col-sm-2">
+                                    <label for="inputCodPersonal">HC </label>
+                                    <input type="text" class="form-control form-control-sm" formControlName="hc" autocomplete="off">
+                                </div>
+                            
+                                <div class="col-sm-2">
+                                    <label for="inputCodPersonal">Telefono </label>
+                                    <input type="text" class="form-control form-control-sm" formControlName="telefono" autocomplete="off">
+                                </div>
+                            
+                                <div class="col-sm-4">
+                                    <label for="inputCodPersonal">Puesto </label>
+                                    <input type="text" class="form-control form-control-sm" formControlName="puesto" autocomplete="off">
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <label for="inputCodPersonal">Fecha Ingreso </label>
+                                    <input type="text" class="form-control form-control-sm" formControlName="fechaingreso" autocomplete="off">
+                                </div>
+                            
+                            
+                            
+                            </div>
+                            
+                            
+                            <div>
+                                &nbsp;
+                                <p><b>DATOS DEL ACCIDENTE: </b></p>
+                            
+                                <div class="form-group row mb-2">
+                            
+                                    <div class="col-sm-3">
+                                        <label for="inputCodPersonal">Empresa </label>
+                                        <select (change)="onChangeEmpresaSucursal($event.target.value)" formControlName="codempresa"
+                                            class="form-control form-control-sm" [ngClass]="{ 'is-invalid': submitted && f.codempresa.errors }">
+                                            <option value="" disabled>Seleccionar</option>
+                                            <option *ngFor="let empresa of empresas" [value]="empresa.codempresa">
+                                                {{empresa.desrazonsocial}}
+                                            </option>
+                                        </select>
+                                    </div>
+                            
+                                    <div class="col-sm-3">
+                                        <label for="inputCodPersonal">Sede </label>
+                                        <select formControlName="sede" class="form-control form-control-sm"
+                                            [ngClass]="{ 'is-invalid': submitted && f.sede.errors }">
+                                            <option value="" disabled>Seleccionar</option>
+                                            <option *ngFor="let sucursal of sucursales" [value]="sucursal.codsucursal">
+                                                {{sucursal.nomsucursal}}
+                                            </option>
+                                        </select>
+                                    </div>
+                            
+                                    <div class="col-sm-2">
+                                        <label for="inputCodPersonal">Fecha Accidente </label>
+                                        <input type="date" class="form-control form-control-sm" formControlName="fechaacci" autocomplete="off">
+                                    </div>
+                            
+                                    <div class="col-sm-2">
+                                        <label for="inputCodPersonal">Hora Accidente</label>
+                                        <input type="time" class="form-control form-control-sm" formControlName="horaacci" autocomplete="off">
+                                    </div>
+                            
+                                    <div class="col-sm-2">
+                                        <label for="inputCodPersonal">Mes</label>
+                                        <select formControlName="mes" class="form-control form-control-sm">
+                                            <option value="" disabled>Seleccionar</option>
+                                            <option *ngFor="let tipo of meses" [value]="tipo.id">
+                                                {{tipo.deslarga}}
+                                            </option>
+                                        </select>
+                                    </div>
+                            
+                            
+                                </div>
+                            
+                                <div class="form-group row mb-2">
+                            
+                                    <div class="col-sm-2">
+                                        <label for="inputCodPersonal">Fecha de Reg </label>
+                                        <input type="date" class="form-control form-control-sm" formControlName="fechareg" autocomplete="off">
+                                    </div>
+                            
+                                    <div class="col-sm-2">
+                                        <label for="inputCodPersonal">Hora de Reg </label>
+                                        <input type="time" class="form-control form-control-sm" formControlName="horareg" autocomplete="off">
+                                    </div>
+                            
+                                    <div class="col-sm-3">
+                                        <label for="inputCodPersonal">Parte del Cuerpo Afectado </label>
+                                        <select formControlName="partcuerples" class="form-control form-control-sm">
+                                            <option value="" disabled>Seleccionar</option>
+                                            <option *ngFor="let tipo of parteAfectadas" [value]="tipo.id">
+                                                {{tipo.deslarga}}
+                                            </option>
+                                        </select>
+                                    </div>
+                            
+                                    <div class="col-sm-2">
+                                        <label for="inputCodPersonal">Gravedad del Accidente </label>
+                                        <select formControlName="graveacc" class="form-control form-control-sm">
+                                            <option value="" disabled>Seleccionar</option>
+                                            <option *ngFor="let tipo of gravedadAccidentes" [value]="tipo.id">
+                                                {{tipo.deslarga}}
+                                            </option>
+                                        </select>
+                                    </div>
+                            
+                                    <div class="col-sm-3">
+                                        <label for="inputCodPersonal">Tipo Accidente </label>
+                                        <select formControlName="tipoacci" class="form-control form-control-sm">
+                                            <option value="" disabled>Seleccionar</option>
+                                            <option *ngFor="let tipo of tiposAccidentes" [value]="tipo.id">
+                                                {{tipo.deslarga}}
+                                            </option>
+                                        </select>
+                                    </div>
+                            
+                                </div>
+                            
+                                <div class="form-group row mb-2">
+                            
+                                    <div class="col-sm-6">
+                                        <label for="inputCodPersonal">Lugar del Accidente </label>
+                                        <input type="text" class="form-control form-control-sm" formControlName="lugaracci" autocomplete="off">
+                                    </div>
+                            
+                                    <div class="col-sm-6">
+                                        <label for="inputCodPersonal">Actividad del Accidente </label>
+                                        <input type="text" class="form-control form-control-sm" formControlName="actividadacci" autocomplete="off">
+                                    </div>
+                            
+                                </div>
+                            
+                            
+                                <div class="form-group row mb-2">
+                                    <div class="col-sm-12">
+                                        <label for="inputCodPersonal"> Descripcion de Accidente </label>
+                                        <textarea rows="3" class="form-control form-control-sm" formControlName="descacci"></textarea>
+                                    </div>
+                                </div>
+                            
+                            
+                            </div>
+                            
+
+                            </form>
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,278 @@
+<div class="row">
+
+    <div class="col-12">
+        <div class="card divmargen">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="far fa-list-alt"></i>
+                    &nbsp;
+                    Menu
+                    &nbsp;
+                    <button type="button" class="btn btn-secondary btn-sm" (click)="onResetFormMenu()" data-toggle="modal"
+                        data-target="#viewModalMenu">
+                        <i class="far fa-plus-square"></i>
+                        Crear
+                    </button>
+                </h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+
+                <div class="table-responsive">
+
+                    <table mat-table [dataSource]="menuData" class="mat-elevation-z8">
+                    
+                        <ng-container matColumnDef="Opciones">
+                            <th mat-header-cell *matHeaderCellDef> Opciones </th>
+                            <td mat-cell *matCellDef="let menu">
+                            <button type="button" name="editar" (click)="onUpdateMenu(menu)" title="Editar Menu" data-toggle="modal"
+                                data-target="#viewModalMenu" class="btn button-blue btn-sm">
+                                <i class="far fa-edit"></i>
+                            </button>
+                            &nbsp;
+                            <button type="button" name="acceso" title="Accesos" (click)="editAccesoMenu(menu)" data-toggle="modal"
+                                data-target="#viewModalAcceso" class="btn button-plomo btn-sm">
+                                <i class="fas fa-list"></i>
+                            </button>
+                            &nbsp;
+                            <button type="button" name="perfil" title="Accesos" (click)="deleteSubMenu(menu)" class="btn btn-danger btn-sm">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            </td>
+                        </ng-container>
+                    
+                        <ng-container matColumnDef="Nombre">
+                            <th mat-header-cell *matHeaderCellDef> Nombre </th>
+                            <td mat-cell *matCellDef="let menu"> {{menu.desgrupomenu}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="Descripcion">
+                            <th mat-header-cell *matHeaderCellDef> Descripcion </th>
+                            <td mat-cell *matCellDef="let menu"> {{menu.desgrupo}} </td>
+                        </ng-container>
+                    
+                        <tr mat-header-row *matHeaderRowDef="menuCol"></tr>
+                        <tr mat-row *matRowDef="let row; columns: menuCol;"></tr>
+                    
+                    
+                    </table>
+                    
+                    <mat-paginator [pageSizeOptions]="[6, 10]" showFirstLastButtons></mat-paginator>
+
+                   
+
+                </div>
+
+
+            </div>
+            <!-- /.card-body -->
+        </div>
+
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->
+
+
+<!-- Modal -->
+<div class="modal fade" id="viewModalMenu" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form [formGroup]="formMenu" (ngSubmit)="onSubmit()" class="form-horizontal">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Menu</h5>
+                    <button type="button" #closebutton class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-12">
+
+                                <div class="form-group row">
+                                    <label for="inputPerfilDescripcion"
+                                        class="col-sm-2 col-form-label">Nombre</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" formControlName="desgrupomenu"
+                                            placeholder="Nombre del Menu" autocomplete="off"
+                                            [ngClass]="{ 'is-invalid': submitted && f.desgrupomenu.errors }">
+                                        <div *ngIf="submitted && f.desgrupomenu.errors" class="invalid-feedback">
+                                            <div *ngIf="f.desgrupomenu.errors.required">Ingresar Nombre de Menu</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="inputPerfilDescripcion" class="col-sm-2 col-form-label">Descripcion</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" formControlName="desgrupo" placeholder="Descripcion del Menu"
+                                            autocomplete="off" [ngClass]="{ 'is-invalid': submitted && f.desgrupo.errors }">
+                                        <div *ngIf="submitted && f.desgrupo.errors" class="invalid-feedback">
+                                            <div *ngIf="f.desgrupo.errors.required">Ingresar Descripcion</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="inputPerfilDescripcion" class="col-sm-2 col-form-label">Icono</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" formControlName="desicono" placeholder="Codigo del Icono"
+                                            autocomplete="off" [ngClass]="{ 'is-invalid': submitted && f.desicono.errors }">
+                                        <div *ngIf="submitted && f.desicono.errors" class="invalid-feedback">
+                                            <div *ngIf="f.desicono.errors.required">Ingrese Codigo del icono</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-info" #closeBtn>Registrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="viewModalAcceso" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <!--<form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="form-horizontal">-->
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Detalle de Menu : {{codgrupoTmp}}</h5>
+                <button type="button" #closebutton class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="container-fluid">
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <form [formGroup]="formSubmenu" (ngSubmit)="onSubmitSubmenu()" class="form-horizontal">
+
+                                <div class="form-group row">
+                                   
+                                    <label for="inputPerfilDescripcion" class="col-sm-1 col-form-label">Nombre</label>
+                                    <div class="col-sm-5">
+                                        <input type="text" class="form-control form-control-sm" formControlName="desfuncion" 
+                                            placeholder="Nombre del Menu" [ngClass]="{ 'is-invalid': submittedSubmenu && g.desfuncion.errors }">
+                                            <div *ngIf="submittedSubmenu && g.desfuncion.errors" class="invalid-feedback">
+                                                <div *ngIf="g.desfuncion.errors.required">*Ingrese Nombre</div>
+                                            </div>
+                                       
+                                    </div>
+
+                                    <label for="inputPerfilDescripcion" class="col-sm-1 col-form-label">Sup</label>
+                                    <div class="col-sm-5">
+                                        <input type="number" class="form-control form-control-sm" formControlName="codfuncionsup" placeholder="Codigo Menu Superior">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                   
+                                    <label for="inputPerfilDescripcion" class="col-sm-1 col-form-label">URL</label>
+                                    <div class="col-sm-5">
+                                        <input type="text" class="form-control form-control-sm" formControlName="desurl" placeholder="Ingrese Ruta de acceso">
+                                       
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-12 text-right">
+                                        <button type="submit" class="btn btn-info">Grabar</button>
+                                    </div>
+                                </div>
+                            
+                            </form>
+                        </div>
+
+
+                    </div>
+                    <div class="row">
+
+                        <div class="table-responsive">
+
+                        <table mat-table [dataSource]="menuAsigData" class="mat-elevation-z8">
+                        
+                            <ng-container matColumnDef="Opciones">
+                                <th mat-header-cell *matHeaderCellDef> Opciones </th>
+                                <td mat-cell *matCellDef="let menusAsig">
+
+                                    <button type="button" name="editar" (click)="onUpdateSubMenu(menusAsig)" title="Editar Submenu"
+                                        class="btn btn-warning btn-sm">
+                                        <i class="far fa-edit"></i>
+                                    </button>
+                                    &nbsp;
+                                    <button *ngIf="menusAsig.estado == true" (click)="onDisableSubmenu(menusAsig)" title="Desactivar Menu" type="button"
+                                        class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                                    <button *ngIf="menusAsig.estado == false" (click)="onActiveSubmenu(menusAsig)" type="button"
+                                        class="btn btn-success btn-sm"><i class="fas fa-check-circle"></i></button>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="Codigo">
+                                <th mat-header-cell *matHeaderCellDef> Codigo </th>
+                                <td mat-cell *matCellDef="let menusAsig"> {{menusAsig.id}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="Grupo">
+                                <th mat-header-cell *matHeaderCellDef> Grupo </th>
+                                <td mat-cell *matCellDef="let menusAsig"> {{menusAsig.codgrupo}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="Nombre">
+                                <th mat-header-cell *matHeaderCellDef> Nombre </th>
+                                <td mat-cell *matCellDef="let menusAsig"> {{menusAsig.desfuncion}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="Sup">
+                                <th mat-header-cell *matHeaderCellDef> Sup </th>
+                                <td mat-cell *matCellDef="let menusAsig"> {{menusAsig.codfuncionsup}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="Url">
+                                <th mat-header-cell *matHeaderCellDef> Url </th>
+                                <td mat-cell *matCellDef="let menusAsig"> {{menusAsig.desurl}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="Estado">
+                                <th mat-header-cell *matHeaderCellDef> Estado </th>
+                                <td mat-cell *matCellDef="let menusAsig">
+                                    <span *ngIf="menusAsig.estado == true" class="badge badge-success">Activo</span>
+                                    <span *ngIf="menusAsig.estado == false" class="badge badge-danger">Inactivo</span>
+                                </td>
+                            </ng-container>
+                        
+                            <tr mat-header-row *matHeaderRowDef="menuAsigCol"></tr>
+                            <tr mat-row *matRowDef="let row; columns: menuAsigCol;"></tr>
+                        
+                        </table>
+                        
+                        <mat-paginator #paginatorMenuAsig [pageSizeOptions]="[5]" showFirstLastButtons>
+                        </mat-paginator>
+
+                        </div>
+                        
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+            </div>
+            <!--</form>-->
+        </div>
+    </div>
+</div>
+
+
+<!-- /.Modal Acceso -->

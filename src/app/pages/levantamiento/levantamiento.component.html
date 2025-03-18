@@ -1,0 +1,647 @@
+<div class="row">
+
+    <div class="col-12">
+        <div class="card divmargen">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="far fa-list-alt"></i>
+                    &nbsp;
+                    Levantamiento de Medidas Correctivas
+                </h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+
+                <div class="col-sm-8">
+                    <form (ngSubmit)="onSearchAccidente()">
+
+                        <div class="form-group row">
+                            <label for="inputUsuarioNombre" class="col-sm-2 col-form-label">Codigo Acci.: </label>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <input type="text" name="searchInput" [(ngModel)]="searchInput"
+                                        class="form-control form-control-sm" placeholder="Texto a buscar"
+                                        autocomplete="off">
+                                    <button type="submit" class="btn btn-sm btn-info">
+                                        <i class="fa fa-search"></i> Buscar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+
+                <div class="table-responsive">
+
+                    <table mat-table [dataSource]="accidenteData" class="mat-elevation-z8">
+
+                        <ng-container matColumnDef="Opciones">
+                            <th mat-header-cell *matHeaderCellDef> Opciones </th>
+                            <td mat-cell *matCellDef="let accidente">
+                                <button type="button" name="editar" data-toggle="modal"
+                                    data-target="#viewModalAccidente" (click)="onChargeAccidente(accidente)"
+                                    title="Agregar Medidas Correctivas" class="btn btn-success btn-sm">
+                                    <i class="fas fa-clipboard-list"></i>
+                                </button>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="Codigo">
+                            <th mat-header-cell *matHeaderCellDef> Codigo </th>
+                            <td mat-cell *matCellDef="let accidente"> {{accidente.codigo}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="DNI">
+                            <th mat-header-cell *matHeaderCellDef> DNI </th>
+                            <td mat-cell *matCellDef="let accidente"> {{accidente.personal.numdocidentidad}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="Nombre">
+                            <th mat-header-cell *matHeaderCellDef> Nombre </th>
+                            <td mat-cell *matCellDef="let accidente"> {{accidente.personal.apepaterno + ' ' +
+                                accidente.personal.apematerno
+                                + ' ' +accidente.personal.nomtrabajador}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="Gravedad">
+                            <th mat-header-cell *matHeaderCellDef> Gravedad </th>
+                            <td mat-cell *matCellDef="let accidente"> {{accidente.tblgravacc.deslarga}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="TipoAcc">
+                            <th mat-header-cell *matHeaderCellDef> Tipo Accidente </th>
+                            <td mat-cell *matCellDef="let accidente"> {{accidente.tbltipacci.deslarga}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="Estado">
+                            <th mat-header-cell *matHeaderCellDef> Estado </th>
+                            <td mat-cell *matCellDef="let accidente"> {{accidente.tblestado.deslarga}} </td>
+                        </ng-container>
+
+
+                        <tr mat-header-row *matHeaderRowDef="accidenteCol"></tr>
+                        <tr mat-row *matRowDef="let row; columns: accidenteCol;"></tr>
+
+
+                    </table>
+
+                    <mat-paginator #paginatorAccidentes [pageSizeOptions]="[6, 10]" showFirstLastButtons></mat-paginator>
+
+                </div>
+
+
+            </div>
+            <!-- /.card-body -->
+        </div>
+
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->
+
+
+<!-- Modal -->
+<div class="modal fade" id="viewModalAccidente" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Registro de Levantamiento de Medida Correctiva</h5>
+                <button type="button" #closebutton class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="background-color: rgba(255, 255, 255, 0.904)">
+                <div class="container-fluid">
+
+
+                    <div class="row">
+
+                        <div class="col-md-12">
+
+                            <form [formGroup]="formAccidente" class="form-horizontal">
+
+                                <p><b>DATOS DEL ACCIDENTADO: </b></p>
+
+                                <div class="form-group row mb-2">
+                                    <div class="col-sm-4">
+                                        <label for="inputCodPersonal">Empresa </label>
+                                        <input type="text" class="form-control form-control-sm"
+                                            formControlName="perempresa" autocomplete="off">
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label for="inputCodPersonal">Sucursal </label>
+                                        <input type="text" class="form-control form-control-sm"
+                                            formControlName="persede" autocomplete="off">
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label for="inputCodPersonal">Area </label>
+                                        <input type="text" class="form-control form-control-sm"
+                                            formControlName="nomarea" autocomplete="off">
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group row mb-2">
+                                    <div class="col-sm-4">
+                                        <label for="inputCodPersonal">Apellido Paterno </label>
+                                        <input type="text" class="form-control form-control-sm"
+                                            formControlName="apepaterno" autocomplete="off">
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label for="inputCodPersonal">Apellido Materno </label>
+                                        <input type="text" class="form-control form-control-sm"
+                                            formControlName="apematerno" autocomplete="off">
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label for="inputCodPersonal">Nombre </label>
+                                        <input type="text" class="form-control form-control-sm"
+                                            formControlName="nomtrabajador" autocomplete="off">
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group row mb-2">
+
+                                    <div class="col-sm-2">
+                                        <label for="inputCodPersonal">DNI </label>
+                                        <input type="text" class="form-control form-control-sm"
+                                            formControlName="numdocidentidad" autocomplete="off">
+                                    </div>
+
+
+                                    <div class="col-sm-2">
+                                        <label for="inputCodPersonal">HC </label>
+                                        <input type="text" class="form-control form-control-sm" formControlName="hc"
+                                            autocomplete="off">
+                                    </div>
+
+                                    <div class="col-sm-2">
+                                        <label for="inputCodPersonal">Telefono </label>
+                                        <input type="text" class="form-control form-control-sm"
+                                            formControlName="telefono" autocomplete="off">
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <label for="inputCodPersonal">Puesto </label>
+                                        <input type="text" class="form-control form-control-sm" formControlName="puesto"
+                                            autocomplete="off">
+                                    </div>
+
+
+
+                                </div>
+
+
+                                <div>
+                                    &nbsp;
+                                    <p><b>DATOS DEL ACCIDENTE: </b></p>
+
+                                    <div class="form-group row mb-2">
+
+                                        <div class="col-sm-3">
+                                            <label for="inputCodPersonal">Empresa </label>
+                                            <select (change)="onChangeEmpresaSucursal($event.target.value)"
+                                                formControlName="codempresa" class="form-control form-control-sm"
+                                                [ngClass]="{ 'is-invalid': submitted && f.codempresa.errors }">
+                                                <option value="" disabled>Seleccionar</option>
+                                                <option *ngFor="let empresa of empresas" [value]="empresa.codempresa">
+                                                    {{empresa.desrazonsocial}}
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-sm-3">
+                                            <label for="inputCodPersonal">Sede </label>
+                                            <select formControlName="sede" class="form-control form-control-sm"
+                                                [ngClass]="{ 'is-invalid': submitted && f.sede.errors }">
+                                                <option value="" disabled>Seleccionar</option>
+                                                <option *ngFor="let sucursal of sucursales"
+                                                    [value]="sucursal.codsucursal">
+                                                    {{sucursal.nomsucursal}}
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonal">Fecha Accidente </label>
+                                            <input type="date" class="form-control form-control-sm"
+                                                formControlName="fechaacci" autocomplete="off">
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonal">Hora Accidente</label>
+                                            <input type="time" class="form-control form-control-sm"
+                                                formControlName="horaacci" autocomplete="off">
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonal">Nro Dias Desc </label>
+                                            <input type="number" class="form-control form-control-sm"
+                                                formControlName="diasdm" autocomplete="off">
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group row mb-2">
+
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonal">Fecha de Reg </label>
+                                            <input type="date" class="form-control form-control-sm"
+                                                formControlName="fechareg" autocomplete="off">
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonal">Hora de Reg </label>
+                                            <input type="time" class="form-control form-control-sm"
+                                                formControlName="horareg" autocomplete="off">
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <label for="inputCodPersonal">Nro Horas Trabajadas </label>
+                                            <input type="number" class="form-control form-control-sm"
+                                                formControlName="nrohrstrab" autocomplete="off">
+                                        </div>
+
+                                        <div class="col-sm-3">
+                                            <label for="inputCodPersonal">Gravedad del Accidente </label>
+                                            <select formControlName="graveacc" class="form-control form-control-sm">
+                                                <option value="" disabled>Seleccionar</option>
+                                                <option *ngFor="let tipo of gravedadAccidentes" [value]="tipo.id">
+                                                    {{tipo.deslarga}}
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-sm-3">
+                                            <label for="inputCodPersonal">Tipo Accidente </label>
+                                            <select formControlName="tipoacci" class="form-control form-control-sm">
+                                                <option value="" disabled>Seleccionar</option>
+                                                <option *ngFor="let tipo of tiposAccidentes" [value]="tipo.id">
+                                                    {{tipo.deslarga}}
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group row mb-2">
+
+                                        <div class="col-sm-6">
+                                            <label for="inputCodPersonal">Lugar del Accidente </label>
+                                            <input type="text" class="form-control form-control-sm"
+                                                formControlName="lugaracci" autocomplete="off">
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <label for="inputCodPersonal">Actividad del Accidente </label>
+                                            <input type="text" class="form-control form-control-sm"
+                                                formControlName="actividadacci" autocomplete="off">
+                                        </div>
+
+                                    </div>
+
+
+
+                                    <div class="form-group row mb-2">
+                                        <div class="col-sm-12">
+                                            <label for="inputCodPersonal"> Descripcion de Accidente </label>
+                                            <textarea rows="3" class="form-control form-control-sm"
+                                                formControlName="descacci"></textarea>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div>
+                                    &nbsp;
+                                    <div class="form-group row mb-3 mb-3">
+                                        <div class="col-sm-12">
+                                            <h3 class="card-title">
+                                                <i class="far fa-list-alt"></i>
+                                                &nbsp;
+                                                MEDIDA CORRECTIVA
+
+
+                                            </h3>
+                                        </div>
+                                    </div>
+                                    <div class="container-fluid">
+
+
+                                        <div class="table-responsive">
+
+                                            <table mat-table [dataSource]="medidaCorrectivaData"
+                                                class="mat-elevation-z8">
+
+                                                <ng-container matColumnDef="Opciones">
+                                                    <th mat-header-cell *matHeaderCellDef> Opciones </th>
+                                                    <td mat-cell *matCellDef="let medida">
+                                                        <button type="button" name="editar" title="Editar Medida" class="btn button-edit btn-sm"
+                                                            data-toggle="modal" data-target="#viewModalMedidaCorrectiva" (click)="chargeMedida(medida)">
+                                                            <i class="far fa-edit"></i>
+                                                        </button>
+                                                        &nbsp;
+                                                        <button type="button" name="arch" title="arch"
+                                                            data-toggle="modal" data-target="#viewModalFileCarga"
+                                                             *ngIf="medida.showCargaFile"
+                                                            (click)="onListLevaArchivos(medida)"
+                                                            class="btn btn-success btn-sm">
+                                                            <i class="fas fa-file-upload"></i>
+                                                        </button>
+                                                    </td>
+                                                </ng-container>
+
+                                                <ng-container matColumnDef="Descripcion">
+                                                    <th mat-header-cell *matHeaderCellDef> Descripcion </th>
+                                                    <td mat-cell *matCellDef="let medida">
+                                                        <p style="font-size:80%;"> {{medida.descmedida}} </p>
+                                                    </td>
+                                                </ng-container>
+
+                                                <ng-container matColumnDef="Responsable">
+                                                    <th mat-header-cell *matHeaderCellDef> Responsable </th>
+                                                    <td mat-cell *matCellDef="let medida">
+                                                        <p style="font-size:80%;"> {{medida.personal.apepaterno + ' ' +
+                                                            medida.personal.apematerno + ' '
+                                                            +medida.personal.nomtrabajador}} </p>
+                                                    </td>
+                                                </ng-container>
+
+                                                <ng-container matColumnDef="FechaReg">
+                                                    <th mat-header-cell *matHeaderCellDef> FechaReg </th>
+                                                    <td mat-cell *matCellDef="let medida">
+                                                        <p style="font-size:80%;"> {{medida.fechareg}} </p>
+                                                    </td>
+                                                </ng-container>
+
+                                                <ng-container matColumnDef="FechaLimi">
+                                                    <th mat-header-cell *matHeaderCellDef> FechaLimi </th>
+                                                    <td mat-cell *matCellDef="let medida">
+                                                        <p style="font-size:80%;"> {{medida.fechalim}} </p>
+                                                    </td>
+                                                </ng-container>
+
+                                                <ng-container matColumnDef="Estado">
+                                                    <th mat-header-cell *matHeaderCellDef> Estado </th>
+                                                    <td mat-cell *matCellDef="let medida">
+                                                        <p style="font-size:80%;"> {{medida.tblestado.deslarga}} </p>
+                                                    </td>
+                                                </ng-container>
+
+                                                <tr mat-header-row *matHeaderRowDef="medidaCorrectivaCol"></tr>
+                                                <tr mat-row *matRowDef="let row; columns: medidaCorrectivaCol;"></tr>
+
+                                            </table>
+
+                                            <mat-paginator #paginatorMedida [pageSizeOptions]="[6]"
+                                                showFirstLastButtons>
+                                            </mat-paginator>
+
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="viewModalMedidaCorrectiva" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form [formGroup]="formMedidaCorrectiva" (ngSubmit)="onSubmit()" class="form-horizontal">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Medida Correctiva</h5>
+                    <button type="button" #closebuttonMedida class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-12">
+
+                                <div class="form-group row mb-2">
+
+                                    <div class="col-sm-2">
+                                        <label for="inputCodPersonaluno"> DNI</label>
+                                        <input type="text" class="form-control form-control-sm"
+                                            formControlName="numdocidentidad" readonly name="personaluno"
+                                            autocomplete="off">
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <label for="inputCodPersonaluno"> Ape. Paterno</label>
+                                        <input type="text" class="form-control form-control-sm"
+                                            formControlName="apepaterno" readonly name="personaluno" autocomplete="off">
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <label for="inputCodPersonaluno"> Ape. Materno</label>
+                                        <input type="text" class="form-control form-control-sm"
+                                            formControlName="apematerno" readonly name="personaluno" autocomplete="off">
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label for="inputCodPersonaluno"> Nombre</label>
+                                        <input type="text" class="form-control form-control-sm"
+                                            formControlName="nomtrabajador" readonly name="personaluno"
+                                            autocomplete="off">
+                                    </div>
+
+                                </div>
+
+
+                                <div class="form-group row mb-2">
+                                    <div class="col-sm-4">
+                                        <label for="inputCodPersonaluno"> Area</label>
+                                        <input type="text" class="form-control form-control-sm"
+                                            formControlName="nomarea" name="personaluno" autocomplete="off" readonly>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <label for="inputCodPersonal">Estado de Leva.</label>
+                                        <select formControlName="estadolev" class="form-control form-control-sm">
+                                            <option value="estado" disabled>Seleccionar</option>
+                                            <option *ngFor="let estlev of estadosLevantamiento" [value]="estlev.id">
+                                                {{estlev.deslarga}}
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <label for="inputCodPersonal">Estado Medida</label>
+                                        <select formControlName="estado" class="form-control form-control-sm">
+                                            <option value="estado" disabled>Seleccionar</option>
+                                            <option *ngFor="let estmed of estadosMedidaCorrectiva" [value]="estmed.id">
+                                                {{estmed.deslarga}}
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="form-group row mb-2">
+
+                                    <div class="col-sm-6">
+                                        <label for="inputCodPersonal">Fecha Registro</label>
+                                        <input type="date" class="form-control form-control-sm"
+                                            formControlName="fechareg" autocomplete="off"
+                                            [ngClass]="{ 'is-invalid': submitted && f.fechareg.errors }">
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <label for="inputCodPersonal">Fecha Limite</label>
+                                        <input type="date" class="form-control form-control-sm"
+                                            formControlName="fechalim" autocomplete="off"
+                                            [ngClass]="{ 'is-invalid': submitted && f.fechalim.errors }">
+                                    </div>
+
+
+                                </div>
+
+                                <div class="form-group row mb-2">
+                                    <div class="col-sm-12">
+                                        <label for="inputCodPersonal"> Descripcion de Medida Correctiva </label>
+                                        <textarea rows="3" class="form-control form-control-sm"
+                                            formControlName="descmedida"></textarea>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-info" #closeBtn>Registrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal - FILE CHARGE -->
+<div class="modal fade" id="viewModalFileCarga" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Archivos</h5>
+                <button type="button" #closeCarga class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <form (ngSubmit)="onFileCharger()" [formGroup]="formFileCarga" class="form-horizontal">
+                        <div class="row">
+
+                            <div class="col-md-12">
+
+                                <div class="form-group row">
+                                    <label for="inputPerfilDescripcion" class="col-sm-2 col-form-label">Cargar</label>
+                                    <div class="col-sm-10">
+                                        <input type="file" class="form-control form-control-sm"
+                                            placeholder="Nombre del Perfil" (change)="onFileSelectedMedida($event)"
+                                            #fileMedida autocomplete="off">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group row mb-2">
+                                    <div class="col-sm-12 text-right">
+                                        <!--<button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>-->
+                                        <button type="submit" title="Registrar Archivo" class="btn btn-success"
+                                            #closeBtn>Registrar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="table-responsive">
+
+                        <table mat-table [dataSource]="MedidaArchivoData" class="mat-elevation-z8">
+
+                            <ng-container matColumnDef="Opciones">
+                                <th mat-header-cell *matHeaderCellDef> Opciones </th>
+                                <td mat-cell *matCellDef="let archi">
+
+                                    <button type="button" name="proemo" title="Descargar Archivo"
+                                        (click)="descargarFile(archi)" class="btn btn-success btn-sm">
+                                        <i class="fas fa-file-download"></i>
+                                    </button>
+
+                                    &nbsp;
+                                    <button type="button" name="proemo" title="Eliminar Registro"
+                                        (click)="deleteByIdMedidaArchivo(archi)" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="Nombre">
+                                <th mat-header-cell *matHeaderCellDef> Nombre </th>
+                                <td mat-cell *matCellDef="let archi">
+                                    <p class="tabla">{{ archi.archivo.nombre }}</p>
+                                </td>
+                            </ng-container>
+
+
+                            <tr mat-header-row *matHeaderRowDef="MedidaArchivoCol"></tr>
+                            <tr mat-row *matRowDef="let row; columns: MedidaArchivoCol;"></tr>
+
+
+                        </table>
+
+                        <mat-paginator #paginatorArchivos [pageSizeOptions]="[6]" showFirstLastButtons>
+                        </mat-paginator>
+
+
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+            </div>
+
+        </div>
+
+    </div>
+</div>

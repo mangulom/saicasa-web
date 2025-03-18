@@ -1,0 +1,57 @@
+<div class="row">
+
+    <div class="col-12">
+        <div class="card divmargen">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="far fa-list-alt"></i>
+                    &nbsp;
+                    Filtrar Por Campaña
+                    &nbsp;
+                </h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+
+                <div class="table-responsive">
+
+                    <div class="col-sm-8">
+                        <form (ngSubmit)="onSearchFiltro()">
+                    
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <div class="input-group">
+                                        Fecha Ini:
+                                        &nbsp;
+                                        <input type="date" name="fechaini" [(ngModel)]="fechaini"
+                                            class="form-control form-control-sm" placeholder="Texto a buscar" autocomplete="off">
+                                        &nbsp;
+                                        Fecha Fin:
+                                        &nbsp;
+                                        <input type="date" name="fechafin" [(ngModel)]="fechafin" class="form-control form-control-sm"
+                                            placeholder="Texto a buscar" autocomplete="off">
+                                        <button type="submit" class="btn btn-sm btn-info">
+                                            <i class="fa fa-search"></i> Descargar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                    
+                        </form>
+                    </div>
+
+
+
+                  
+                </div>
+
+
+            </div>
+            <!-- /.card-body -->
+        </div>
+
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->
+

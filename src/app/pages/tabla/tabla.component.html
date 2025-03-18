@@ -1,0 +1,276 @@
+<div class="row">
+
+    <div class="col-12">
+        <div class="card divmargen">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="far fa-list-alt"></i>
+                    &nbsp;
+                    Tablas Generales
+                    &nbsp;
+                    <button type="button" class="btn btn-secondary btn-sm" (click)="onResetFormTabla()"
+                        data-toggle="modal" data-target="#viewModaltabla">
+                        <i class="far fa-plus-square"></i>
+                        Crear
+                    </button>
+                </h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+
+                <div class="table-responsive">
+
+                    <table mat-table [dataSource]="tablaData" class="mat-elevation-z8">
+                    
+                        <ng-container matColumnDef="Opciones">
+                            <th mat-header-cell *matHeaderCellDef> Opciones </th>
+                            <td mat-cell *matCellDef="let tabla">
+                                <button type="button" name="editar" (click)="onUpdateTabla(tabla)" title="Editar tabla" data-toggle="modal"
+                                    data-target="#viewModaltabla" class="btn button-blue btn-sm">
+                                    <i class="far fa-edit"></i>
+                                </button>
+                                &nbsp;
+                                <button type="button" name="acceso" title="Accesos" (click)="editTablaDetalle(tabla)" data-toggle="modal"
+                                    data-target="#viewModalTablaDetalle" class="btn button-plomo btn-sm">
+                                    <i class="fas fa-list"></i>
+                                </button>
+                                &nbsp;
+                                <button type="button" name="perfil" title="Accesos" (click)="deleteTabla(tabla)" [hidden]="true"
+                                    class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </ng-container>
+                    
+                        <ng-container matColumnDef="Codigo">
+                            <th mat-header-cell *matHeaderCellDef> Codigo </th>
+                            <td mat-cell *matCellDef="let tabla"> {{tabla.tiptabla}} </td>
+                        </ng-container>
+                    
+                        <ng-container matColumnDef="Descripcion">
+                            <th mat-header-cell *matHeaderCellDef> Descripcion </th>
+                            <td mat-cell *matCellDef="let tabla"> {{tabla.destabla}} </td>
+                        </ng-container>
+                    
+                        <tr mat-header-row *matHeaderRowDef="tablaCol"></tr>
+                        <tr mat-row *matRowDef="let row; columns: tablaCol;"></tr>
+                    
+                    
+                    </table>
+                    
+                    <mat-paginator [pageSizeOptions]="[6, 10]" showFirstLastButtons></mat-paginator>
+
+
+                </div>
+
+            </div>
+            <!-- /.card-body -->
+        </div>
+
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->
+
+
+<!-- Modal -->
+<div class="modal fade" id="viewModaltabla" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form [formGroup]="formTabla" (ngSubmit)="onSubmit()" class="form-horizontal">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Tablas Generales</h5>
+                    <button type="button" #closebutton class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-12">
+
+                                <div class="form-group row">
+                                    <label for="inputTablaTip" class="col-sm-2 col-form-label">Codigo</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" formControlName="tiptabla" placeholder="Ingrese Codigo" [readonly]="readOnlyTabla" maxlength="4"
+                                            autocomplete="off" [ngClass]="{ 'is-invalid': submitted && f.tiptabla.errors }">
+                                        <div *ngIf="submitted && f.tiptabla.errors" class="invalid-feedback">
+                                            <div *ngIf="f.tiptabla.errors.required">Codigo</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="inputDesTabla" class="col-sm-2 col-form-label">Descripcion</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" formControlName="destabla" placeholder="Ingrese Descripcion"
+                                            autocomplete="off" [ngClass]="{ 'is-invalid': submitted && f.destabla.errors }">
+                                        <div *ngIf="submitted && f.destabla.errors" class="invalid-feedback">
+                                            <div *ngIf="f.destabla.errors.required">Ingresar Descripcion</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="inputObservacion" class="col-sm-2 col-form-label">Observacion</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" formControlName="desobservacion" placeholder="Ingrese Observacion"
+                                            autocomplete="off" [ngClass]="{ 'is-invalid': submitted && f.desobservacion.errors }">
+                                        <div *ngIf="submitted && f.desobservacion.errors" class="invalid-feedback">
+                                            <div *ngIf="f.desobservacion.errors.required">Ingresar Descripcion</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                               
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-info" #closeBtn>Registrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="viewModalTablaDetalle" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <!--<form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="form-horizontal">-->
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Detalle de Tablas Generales</h5>
+                <button type="button" #closebutton class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="container-fluid">
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <form [formGroup]="formTablaDetalle" (ngSubmit)="onSunmitTablaDetalle()" class="form-horizontal">
+
+                               
+                                <div class="form-group row">
+
+                                    <label for="inputPerfilDescripcion" class="col-sm-1 col-form-label">Abrev.</label>
+                                    <div class="col-sm-3">
+                                        <input type="text" class="form-control form-control-sm" formControlName="descorta" maxlength="4"
+                                            placeholder="Ingrese Abreviatura" [ngClass]="{ 'is-invalid': submittedDetalle && g.descorta.errors }">
+                                            <div *ngIf="submittedDetalle && g.descorta.errors" class="invalid-feedback">
+                                                <div *ngIf="g.descorta.errors.required">Ingrese Abreviatura</div>
+                                            </div>
+
+                                    </div>
+                              
+                                
+                                    <label for="inputPerfilDescripcion" class="col-sm-2 col-form-label">Descripcion</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control form-control-sm" formControlName="deslarga"
+                                            placeholder="Ingrese Descripcion" [ngClass]="{ 'is-invalid': submittedDetalle && g.deslarga.errors }">
+                                        <div *ngIf="submittedDetalle && g.deslarga.errors" class="invalid-feedback">
+                                            <div *ngIf="g.deslarga.errors.required">Ingrese Descripcion</div>
+                                        </div>
+
+                                
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group row">
+
+                                    <label for="inputPerfilIndicador" class="col-sm-1 col-form-label">Ind.</label>
+                                    <div class="col-sm-2">
+                                        <input type="text" class="form-control form-control-sm" formControlName="codvar"
+                                            [ngClass]="{ 'is-invalid': submittedDetalle && g.codvar.errors }">
+                                        <div *ngIf="submittedDetalle && g.codvar.errors" class="invalid-feedback">
+                                            <div *ngIf="g.codvar.errors.required">Ingrese Indicador</div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                
+                                <div class="form-group row">
+                                    <div class="col-sm-12 text-right">
+                                        <button type="submit" class="btn btn-info">Grabar</button>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+
+
+                    </div>
+                    <div class="row">
+
+                        <div class="table-responsive">
+
+
+                            <table mat-table [dataSource]="tablaDetalleData" class="mat-elevation-z8">
+                            
+                                <ng-container matColumnDef="Opciones">
+                                    <th mat-header-cell *matHeaderCellDef> Opciones </th>
+                                    <td mat-cell *matCellDef="let tabladetalle">
+                            
+                                        <button type="button" name="editar" (click)="onUpdateTablaDetalle(tabladetalle)" title="Editar Submenu"
+                                            class="btn btn-warning btn-sm">
+                                            <i class="far fa-edit"></i>
+                                        </button>
+                                        &nbsp;
+                                        <button (click)="onDeleteTablaDetalle(tabladetalle)" title="Desactivar Menu"
+                                            type="button" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </ng-container>
+                            
+                                <ng-container matColumnDef="Codigo">
+                                    <th mat-header-cell *matHeaderCellDef> Codigo </th>
+                                    <td mat-cell *matCellDef="let tabladetalle"> {{("00000"+tabladetalle.id).slice(-4)}} </td>
+                                </ng-container>
+                            
+                                <ng-container matColumnDef="Descorta">
+                                    <th mat-header-cell *matHeaderCellDef> Abrev </th>
+                                    <td mat-cell *matCellDef="let tabladetalle"> {{tabladetalle.descorta}} </td>
+                                </ng-container>
+                            
+                                <ng-container matColumnDef="Deslarga">
+                                    <th mat-header-cell *matHeaderCellDef> Descripcion </th>
+                                    <td mat-cell *matCellDef="let tabladetalle"> {{tabladetalle.deslarga}} </td>
+                                </ng-container>
+                            
+                                <tr mat-header-row *matHeaderRowDef="tablaDetalleCol"></tr>
+                                <tr mat-row *matRowDef="let row; columns: tablaDetalleCol;"></tr>
+                            
+                            </table>
+                            
+                            <mat-paginator #paginatorTablaDetalle [pageSizeOptions]="[5]" showFirstLastButtons>
+                            </mat-paginator>
+
+                           
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+            </div>
+            <!--</form>-->
+        </div>
+    </div>
+</div>
+
+
+<!-- /.Modal Acceso -->

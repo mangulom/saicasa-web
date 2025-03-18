@@ -1,0 +1,160 @@
+<div class="row">
+
+    <div class="col-12">
+        <div class="card divmargen">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="far fa-list-alt"></i>
+                    &nbsp;
+                    Politica SST
+                    &nbsp;
+                    <button type="button" class="btn btn-secondary btn-sm" (click)="onResetFormPolitica()"
+                        data-toggle="modal" data-target="#viewModalPolitica">
+                        <i class="far fa-plus-square"></i>
+                        Crear
+                    </button>
+                </h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+
+                <div class="table-responsive">
+
+                    <table mat-table [dataSource]="politicaData" class="mat-elevation-z8">
+
+                        <ng-container matColumnDef="Opciones">
+                            <th mat-header-cell *matHeaderCellDef> Opciones</th>
+                            <td mat-cell *matCellDef="let politica;let i = index">
+                                <button type="button" name="editar" title="Editar Editar" data-toggle="modal" (click)="onUpdatePolitica(politica)"
+                                    data-target="#viewModalPolitica" class="btn button-edit btn-sm">
+                                    <i class="far fa-edit"></i>
+                                </button>
+                                &nbsp;
+                                <button *ngIf="politica.estado == true" type="button" class="btn btn-danger btn-sm" title="Eliminar Registro" (click)="deleteById(politica)">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                                &nbsp;
+                                <button type="button" name="arch" title="arch" (click)="descargarFile(politica)" *ngIf="politica?.codarchivo"
+                                     class="btn btn-success btn-sm">
+                                    <i class="fas fa-file-download"></i>
+                                </button>
+                            </td>
+                        </ng-container>
+                    
+                        <ng-container matColumnDef="Empresa">
+                            <th mat-header-cell *matHeaderCellDef> Empresa </th>
+                            <td mat-cell *matCellDef="let politica">
+                               {{politica.empresa.desrazonsocial }}
+                            </td>
+                        </ng-container>
+                    
+                        <ng-container matColumnDef="Fechaini">
+                            <th mat-header-cell *matHeaderCellDef> Fecha Inicio</th>
+                            <td mat-cell *matCellDef="let politica">
+                                {{politica.fechaini }} 
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="Fechafin">
+                            <th mat-header-cell *matHeaderCellDef> Fecha Fin</th>
+                            <td mat-cell *matCellDef="let politica">
+                                {{politica.fechafin }} 
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="Estado">
+                            <th mat-header-cell *matHeaderCellDef> Estado </th>
+                            <td mat-cell *matCellDef="let politica">
+                                <span *ngIf="politica.estado == true" class="badge badge-success">Activo</span>
+                                <span *ngIf="politica.estado == false" class="badge badge-danger">Inactivo</span>
+                            </td>
+                        </ng-container>   
+                    
+                        <tr mat-header-row *matHeaderRowDef="politicaCol"></tr>
+                        <tr mat-row *matRowDef="let row; columns: politicaCol;"></tr>
+                    
+                    
+                    </table>
+                    
+                    <mat-paginator #paginatorPolitica [pageSizeOptions]="[7]" showFirstLastButtons>
+                    </mat-paginator>
+
+                </div>
+
+            </div>
+            <!-- /.card-body -->
+        </div>
+
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="viewModalPolitica" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form [formGroup]="formPolitica" (ngSubmit)="onSubmit()" class="form-horizontal">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Politica</h5>
+                    <button type="button" #closebutton class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-12">
+
+                                <div class="form-group row mb-2">
+                                
+                                    <div class="col-sm-6">
+                                        <label for="inputCodPersonal">Empresa </label>
+                                        <select formControlName="codempresa"
+                                            class="form-control form-control-sm" [ngClass]="{ 'is-invalid': submitted && f.codempresa.errors }">
+                                            <option value="" disabled>Seleccionar</option>
+                                            <option *ngFor="let empresa of empresas" [value]="empresa.codempresa">
+                                                {{empresa.desrazonsocial}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                
+                                    <div class="col-sm-6">
+                                        <label for="inputCodPersonal">Fecha Ini</label>
+                                        <input type="date" class="form-control form-control-sm" formControlName="fechaini" autocomplete="off"
+                                            [ngClass]="{ 'is-invalid': submitted && f.fechaini.errors }">
+                                    </div>
+
+                                </div>
+
+
+                                <div class="form-group row mb-2">
+                                    <div class="col-sm-6">
+                                        <label for="inputCodPersonal">Fecha Fin</label>
+                                        <input type="date" class="form-control form-control-sm" formControlName="fechafin" autocomplete="off"
+                                            [ngClass]="{ 'is-invalid': submitted && f.fechafin.errors }">
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <label for="inputCodPersonal">Documento</label>
+                                        <input type="file" class="form-control form-control-sm" (change)="onFileSelectedPolitica($event)" #filePolitica>
+                                    </div>
+                                </div>
+                                
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-info" #closeBtn>Registrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

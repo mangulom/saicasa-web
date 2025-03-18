@@ -1,0 +1,142 @@
+<div class="row">
+
+    <div class="col-12">
+        <div class="card divmargen">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="far fa-list-alt"></i>
+                    &nbsp;
+                    Historial X Vencer
+                    <button *ngIf="exportXVencerCapaTodos" type="button" class="btn btn-success btn-sm" (click)="onExportExcelCapaByPorVencerTodos()">
+                        <i class="far fa-file-excel"></i>
+                    </button>
+                    <button *ngIf="exportXVencerCapaSinVencido" type="button" class="btn btn-success btn-sm" (click)="onExportExcelCapaByPorVencerSinVencido()">
+                        <i class="far fa-file-excel"></i>
+                    </button>
+                    <button *ngIf="exportXVencerSoloVencido" type="button" class="btn btn-success btn-sm" (click)="onExportExcelCapaByVencidoSoloVencido()">
+                        <i class="far fa-file-excel"></i>
+                    </button>
+                </h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+
+                <div class="col-sm-8">
+                    <form (ngSubmit)="onSearchFilter()" [formGroup]="formBusquedad">
+                
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <div class="input-group">
+                
+                                    <div class="col-sm-4">
+                                        <select class="form-control form-control-sm" name="selectedBusqueda" formControlName="busqueda">
+                                            <option value="todos">Todos</option>
+                                            <option value="porven">Por Vencer</option>
+                                            <option value="vencidos">Vencidos</option>
+                                        </select>
+                                    </div>
+                
+                                    <button type="submit" class="btn btn-sm btn-info">
+                                        <i class="fa fa-search"></i> Buscar
+                                    </button>
+                
+                
+                                </div>
+                            </div>
+                        </div>
+                
+                    </form>
+                </div>
+
+                <div class="table-responsive">
+
+
+                    <table mat-table [dataSource]="capaHistData" class="mat-elevation-z8">
+                    
+                    
+                        <ng-container matColumnDef="Sede">
+                            <th mat-header-cell *matHeaderCellDef> Sede </th>
+                            <td mat-cell *matCellDef="let capacitacion">
+                                <p class="tabla"> {{capacitacion.sucursal.nomsucursal }} </p>
+                            </td>
+                        </ng-container>
+                    
+                        <ng-container matColumnDef="ApePat">
+                            <th mat-header-cell *matHeaderCellDef> ApePat </th>
+                            <td mat-cell *matCellDef="let capacitacion">
+                                <p class="tabla"> {{capacitacion.personal.apepaterno }} </p>
+                            </td>
+                        </ng-container>
+                    
+                        <ng-container matColumnDef="ApeMat">
+                            <th mat-header-cell *matHeaderCellDef> ApeMat </th>
+                            <td mat-cell *matCellDef="let capacitacion">
+                                <p class="tabla"> {{capacitacion.personal.apematerno }} </p>
+                            </td>
+                        </ng-container>
+                    
+                        <ng-container matColumnDef="Nombre">
+                            <th mat-header-cell *matHeaderCellDef> Nombre </th>
+                            <td mat-cell *matCellDef="let capacitacion">
+                                <p class="tabla"> {{capacitacion.personal.nomtrabajador }} </p>
+                            </td>
+                        </ng-container>
+                    
+                        <ng-container matColumnDef="DNI">
+                            <th mat-header-cell *matHeaderCellDef> DNI </th>
+                            <td mat-cell *matCellDef="let capacitacion">
+                                <p class="tabla"> {{capacitacion.personal.numdocidentidad }} </p>
+                            </td>
+                        </ng-container>
+                    
+                        <ng-container matColumnDef="Tema">
+                            <th mat-header-cell *matHeaderCellDef> Tema </th>
+                            <td mat-cell *matCellDef="let capacitacion">
+                                <p class="tabla"> {{capacitacion.programa.tbletema.deslarga }} </p>
+                            </td>
+                        </ng-container>
+                    
+                        <ng-container matColumnDef="Tipo">
+                            <th mat-header-cell *matHeaderCellDef> Tipo </th>
+                            <td mat-cell *matCellDef="let capacitacion">
+                                <p class="tabla"> {{capacitacion.programa.tbltipocap.deslarga }} </p>
+                            </td>
+                        </ng-container>
+                    
+                        <ng-container matColumnDef="Motivo">
+                            <th mat-header-cell *matHeaderCellDef> Motivo </th>
+                            <td mat-cell *matCellDef="let capacitacion">
+                                <p class="tabla"> {{capacitacion.programa.tblmtvcap.deslarga }} </p>
+                            </td>
+                        </ng-container>
+                    
+                        <ng-container matColumnDef="FPro">
+                            <th mat-header-cell *matHeaderCellDef> Fec. Program </th>
+                            <td mat-cell *matCellDef="let capacitacion">
+                                <p class="tabla"> {{capacitacion.programa.fechaprogram }} </p>
+                            </td>
+                        </ng-container>
+                    
+                    
+                        <tr mat-header-row *matHeaderRowDef="capaHistCol"></tr>
+                        <tr mat-row *matRowDef="let row; columns: capaHistCol;"></tr>
+                    
+                    
+                    </table>
+                    
+                    <mat-paginator #paginatorHistoriales [pageSizeOptions]="[7]" showFirstLastButtons></mat-paginator>
+
+                
+
+
+                </div>
+
+
+            </div>
+            <!-- /.card-body -->
+        </div>
+
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->
